@@ -82,7 +82,8 @@
 
 <script>
 import db from '@/firebase/init'
-import firebase from 'firebase'
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
 
 export default {
@@ -114,19 +115,31 @@ export default {
         validate () {
             this.$refs.form.validate()
 
+            console.log('test')
+
             if(this.name && this.email && this.password) {
                 firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                 .then(cred => {
+                    console.log('add to database')
+                    console.log(this.name)
+                    console.log(cred.user.uid)
+                    console.log(Date.now())
                     db.collection('users').add({
                         name: this.name,
                         user_id: cred.user.uid,
                         created_at: Date.now()
                     })
+                    .then(function(docRef) {
+                        console.log("Document written with ID: ", docRef.id);
+                    })
+                    .catch(function(error) {
+                        console.error("Error adding document: ", error);
+                    });
+                    console.log('done')
                 })
-                // TODO enable when routing works.
-                // .then(() => {
-                //     this.$router.push({ name: 'Home'})
-                // })
+                .then(() => {
+                    this.$router.push({ name: 'Home'})
+                })
                 .catch(err => {
                     this.feedback = err.message
                 })
