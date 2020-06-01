@@ -1,15 +1,17 @@
 <template>
   <v-app id="app">
+
     <Navbar />
+
     <v-content fluid>
-      <Login />
+      <router-view/>
     </v-content>
+
   </v-app>
 </template>
 
 <script>
 import Navbar from "@/components/layout/Navbar";
-import Login from "@/components/views/auth/Login";
 
 export default {
   name: 'App',
@@ -18,8 +20,7 @@ export default {
     }
   },
   components: {
-    Navbar,
-    Login
+    Navbar
   }
 }
 </script>
