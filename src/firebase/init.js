@@ -1,20 +1,17 @@
-import * as firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from 'firebase'
 
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyDR-DbJbf3xVEO-5myX9_UJfshF1KG6o3c",
-    authDomain: "crc-party-app-eu.firebaseapp.com",
-    databaseURL: "https://crc-party-app-eu.firebaseio.com",
-    projectId: "crc-party-app-eu",
-    storageBucket: "crc-party-app-eu.appspot.com",
-    messagingSenderId: "678872990969",
-    appId: "1:678872990969:web:165a7a6f189c50d1ab8e28",
-    measurementId: "G-PQ673Z4K75"
-  };
+// Your web app's Firebase configuration
+var firebaseConfig = {
+  apiKey: "AIzaSyC3VJYI8qWbz5Y93ZiCk0ySYnf6r5CVHpg",
+  authDomain: "crc-party-grp4.firebaseapp.com",
+  databaseURL: "https://crc-party-grp4.firebaseio.com",
+  projectId: "crc-party-grp4",
+  storageBucket: "crc-party-grp4.appspot.com",
+  messagingSenderId: "582616103815",
+  appId: "1:582616103815:web:2dcf0d20daa3681e62b122"
+};
 
 // Initialize Firebase
-const firebaseApp = firebase.initializeApp(firebaseConfig)
-const db = firebaseApp.firestore();
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-export default { firebaseApp, db };
+export default firebaseApp.firestore()
