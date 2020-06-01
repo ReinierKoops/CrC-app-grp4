@@ -82,35 +82,39 @@
 
 <script>
 import db from '@/firebase/init'
-import * as firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from 'firebase'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
+
+firebase.firestore();
+firebase.firestore.setLogLevel('debug');
 
 export default {
     name: 'Signup',
     components: { 
     },
-    data: () => ({
-        show_pw: false,
-        valid: true,
-        name: null,
-        email: null,
-        password: null,
-        feedback: null,
-        backgroundUrl,
-        nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 20) || 'Name must be less than 20 characters',
-        ],
-        emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-        ],
-        passwordRules: [
-        v => !!v || 'Password is required',
-        v => (v && v.length <= 20 && v.length >= 6) || 'Password must be between 6 to 20 characters',
-        ]
-    }),
+    data() {
+        return {
+            show_pw: false,
+            valid: true,
+            name: null,
+            email: null,
+            password: null,
+            feedback: null,
+            backgroundUrl,
+            nameRules: [
+            v => !!v || 'Name is required',
+            v => (v && v.length <= 20) || 'Name must be less than 20 characters',
+            ],
+            emailRules: [
+            v => !!v || 'E-mail is required',
+            v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+            ],
+            passwordRules: [
+            v => !!v || 'Password is required',
+            v => (v && v.length <= 20 && v.length >= 6) || 'Password must be between 6 to 20 characters',
+            ]
+        }
+    },
     methods: {
         validate () {
             this.$refs.form.validate()
@@ -135,7 +139,6 @@ export default {
                     .catch(function(error) {
                         console.error("Error adding document: ", error);
                     });
-                    console.log('done')
                 })
                 .then(() => {
                     this.$router.push({ name: 'Home'})

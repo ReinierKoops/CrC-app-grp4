@@ -21,7 +21,7 @@
 
         <v-btn 
         text
-        v-if="!name"
+        v-if="name"
         >
           <div class="center-div-text">
             <router-link 
@@ -34,7 +34,7 @@
 
         <v-btn 
         text 
-        v-if="!name"
+        v-if="name"
         >
           <div class="center-div-text">
             <router-link 
@@ -53,7 +53,7 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>User
+              <v-icon>mdi-account-circle</v-icon>{{ name === null ? 'undefined' : name }}
             </router-link>
           </div>
         </v-btn>
