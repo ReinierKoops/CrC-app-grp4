@@ -81,12 +81,12 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
+// import db from '@/firebase/init'
 import firebase from 'firebase'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
 
 firebase.firestore();
-firebase.firestore.setLogLevel('debug');
+// firebase.firestore.setLogLevel('error');
 
 export default {
     name: 'Signup',
@@ -119,27 +119,8 @@ export default {
         validate () {
             this.$refs.form.validate()
 
-            console.log('test')
-
             if(this.name && this.email && this.password) {
                 firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                .then(cred => {
-                    console.log('add to database')
-                    console.log(this.name)
-                    console.log(cred.user.uid)
-                    console.log(Date.now())
-                    db.collection('users').add({
-                        name: this.name,
-                        user_id: cred.user.uid,
-                        created_at: Date.now()
-                    })
-                    .then(function(docRef) {
-                        console.log("Document written with ID: ", docRef.id);
-                    })
-                    .catch(function(error) {
-                        console.error("Error adding document: ", error);
-                    });
-                })
                 .then(() => {
                     this.$router.push({ name: 'Home'})
                 })

@@ -21,7 +21,6 @@
 
         <v-btn 
         text
-        v-if="name"
         >
           <div class="center-div-text">
             <router-link 
@@ -34,7 +33,6 @@
 
         <v-btn 
         text 
-        v-if="name"
         >
           <div class="center-div-text">
             <router-link 
@@ -47,20 +45,18 @@
 
         <v-btn 
         text 
-        v-if="!name"
         >
           <div class="center-div-text">
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>{{ name === null ? 'undefined' : name }}
+              <v-icon>mdi-account-circle</v-icon>User: {{ name }}
             </router-link>
           </div>
         </v-btn>
 
         <v-btn 
         text 
-        v-if="!name"
         >
           <div class="center-div-text">
             <span @click="logout">
@@ -94,16 +90,8 @@ export default {
     let ref = db.collection('users')
 
     // get current user
-    ref.where('user_id', '==', firebase.auth().currentUser.uid).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        // Return first letter capitalized names
-        this.name = doc.data().name.toLowerCase()
-        .split(' ')
-        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-        .join(' ');
-      })
-    })        
+    const id = ref.where('user_id', '==', firebase.auth().currentUser.uid).get()
+    console.log(id)     
   }
 }
 </script>
