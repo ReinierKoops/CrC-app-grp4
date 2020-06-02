@@ -106,8 +106,6 @@ export default {
                     this.feedback = err.message
                 })
                 this.feedback = null
-            } else {
-                this.feedback = 'Please fill in both fields'
             }
         }
     }
