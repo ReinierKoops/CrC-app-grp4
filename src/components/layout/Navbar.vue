@@ -50,7 +50,7 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>User: {{ name }}
+              <v-icon>mdi-account-circle</v-icon>User
             </router-link>
           </div>
         </v-btn>
@@ -75,8 +75,7 @@ export default {
   name: 'Navbar',
   data() {
     return {
-        user: null,
-        name: null
+        user: null
     }
   },
   methods: {
@@ -89,9 +88,11 @@ export default {
   created() {
     let ref = db.collection('users')
 
-    // get current user
-    const id = ref.where('user_id', '==', firebase.auth().currentUser.uid).get()
-    console.log(id)     
+    console.log(ref)
+
+    // // get current user
+    // const id = ref.where('user_id', '==', firebase.auth().currentUser.uid).get()
+    // console.log(id)     
   }
 }
 </script>
