@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home'
-import Fixverify from '@/views/Fixverify'
-import Find from '@/views/Find'
+import Verify from '@/views/Verify'
+import FindFix from '@/views/FindFix'
 import Signup from '@/views/auth/Signup'
 import Login from '@/views/auth/Login'
 import firebase from 'firebase'
@@ -19,17 +19,17 @@ Vue.use(VueRouter)
       // }
     },
     {
-      path: '/fixverify',
-      name: 'Fixverify',
-      component: Fixverify,
+      path: '/findfix',
+      name: 'FindFix',
+      component: FindFix,
       // meta: {
       //   requiresAuth: true
       // }
     },
     {
-      path: '/find',
-      name: 'Find',
-      component: Find,
+      path: '/verify',
+      name: 'Verify',
+      component: Verify,
       // meta: {
       //   requiresAuth: true
       // }
