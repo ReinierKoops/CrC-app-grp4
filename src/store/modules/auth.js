@@ -1,18 +1,39 @@
 import firebaseInit from '@/firebase/init'
 import router from '../../router/index'
 
+firebaseInit.firestore();
+
 const state = {
     username: null,
     user_id: null,
     email: null,
+    feedback: null,
 }
 
 const getters = {
     isLoggedIn: state => !!state.username,
-    getUsername: state => state.username
+    getUsername: state => state.username,
+    getFeedback: state => state.feedback
 }
 
 const actions = {
+    async createUser({ commit }, payload) {
+        var {
+            user
+        } = await firebaseInit.auth().createUserWithEmailAndPassword(payload.email, payload.password);
+
+        // Relate login to a username and date of creation.
+        await firebaseInit.firestore().collection("users").doc(user.uid).set({
+            username: payload.username,
+            email: payload.email,
+            user_id: user.uid,
+            timestamp: Date.now()
+        })
+        // set state of user
+        await commit('setUser', payload.username, user.uid, payload.email);
+        // redirect to home page
+        await router.push({ name: 'Home'});
+    },
     retrieveUserInfo({ commit }) {
         // query 
         let user_db = firebaseInit.firestore().collection('users')
@@ -41,11 +62,15 @@ const actions = {
         }
     },
     logout({ commit }) {
-        firebaseInit.auth().signOut().then(() => {
-            router.push({ name: 'Login' })
-          })
-        // empty state of user
-        commit('setUser', null, null, null);
+        if (state.username) {
+            firebaseInit.auth().signOut().then(() => {
+                router.push({ name: 'Login' })
+            }).catch(err => {
+                state.feedback = err.message
+            });
+            // empty state of user
+            commit('setUser', null, null, null);
+        }
     }
 }
 

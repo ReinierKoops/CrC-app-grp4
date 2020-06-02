@@ -63,7 +63,7 @@
         text 
         >
           <div class="center-div-text">
-            <span @click="logout">
+            <span @click="this.logout">
               <v-icon>mdi-logout</v-icon>Log out
             </span>
           </div>              
@@ -72,18 +72,10 @@
 </template>
 
 <script>
-import firebaseInit from '@/firebase/init'
 import { mapActions } from 'vuex';
-
-firebaseInit.firestore();
 
 export default {
   name: 'Navbar',
-  data() {
-    return {
-        username: null
-    }
-  },
   methods: mapActions(['retrieveUserInfo', 'logout']),
   created() {
     this.retrieveUserInfo();

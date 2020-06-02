@@ -53,8 +53,8 @@
 
                         <p 
                         class="text-center red--text" 
-                        v-if="feedback">
-                            {{ feedback }}
+                        v-if="this.$store.getters.getFeedback">
+                            {{ this.$store.getters.getFeedback }}
                         </p>
 
                         <v-col
@@ -81,11 +81,8 @@
 </template>
 
 <script>
-import firebaseInit from '@/firebase/init'
-import firebase from 'firebase'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
-
-firebaseInit.firestore();
+import { mapActions } from 'vuex';
 
 export default {
     name: 'Signup',
@@ -115,38 +112,21 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['createUser']),
         async validate() {
+            this.$refs.form.validate();
+
             try {
-                this.$refs.form.validate()
-
-                if(this.username && this.email && this.password) {
-                    var {
-                        user
-                    } = await firebaseInit.auth().createUserWithEmailAndPassword(this.email, this.password);
-
-                    // Relate login to a username and date of creation.
-                    await firebaseInit.firestore().collection("users").doc(user.uid).set({
-                        username: this.username,
-                        email: this.email,
-                        user_id: user.uid,
-                        timestamp: Date.now()
-                    })
-
-                    // signout
-                    return await firebase
-                        .auth()
-                        .signOut()
-                        .then(() => {
-                            this.$router.push({ name: 'Login'})
-                        })
-                        .catch(err => {
-                            this.feedback = err.message
-                        });
+                const payload = {
+                    'username': this.username,
+                    'email': this.email, 
+                    'password': this.password, 
                 }
+                this.createUser(payload);
             } catch (error) {
                 console.log('error:', error.message);
             }
-       }
+        }
     }
 }
 </script>
