@@ -2,8 +2,8 @@
   <div>
     <h3>Recommendations</h3>  
     <v-list>
-      <v-list-item :draggable="draggable" v-for="song in songs" :key="song" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
-        <v-list-item-content :id="song"><v-list-item-title v-text="song"/></v-list-item-content>
+      <v-list-item :draggable="draggable" v-for="song in songs" :id="song" :key="song" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
+        <v-list-item-content><v-list-item-title v-text="song"/></v-list-item-content>
       </v-list-item>
     </v-list>    
   </div>
@@ -14,12 +14,14 @@ export default {
   props: ["songs", "draggable"],
   methods: {
     dragStart: function(ev) {
-      var event = new CustomEvent("dragStarted", {"detail": {id: ev.target.id, source: "recommendation"}});
-      document.dispatchEvent(event)
+      let closest = ev.target.closest("div.v-list-item");
+      let event = new CustomEvent("dragStarted", {"detail": {id: closest.id, source: "recommendation"}});
+      document.dispatchEvent(event);
     },
     dragDrop: function(ev) {
-      var event = new CustomEvent("dragDropped", {"detail": {id: ev.target.id, source: "recommendation"}});
-      document.dispatchEvent(event)
+      let closest = ev.target.closest("div.v-list-item");
+      let event = new CustomEvent("dragDropped", {"detail": {id: closest.id, source: "recommendation"}});
+      document.dispatchEvent(event);
     },
     dragOver: function(ev) {
       ev.preventDefault();      
