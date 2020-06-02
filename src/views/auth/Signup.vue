@@ -23,10 +23,10 @@
                         class="color-and-style-form elevation-10"
                     >
                         <v-text-field
-                        v-model="name"
+                        v-model="username"
                         :counter="20"
-                        :rules="nameRules"
-                        label="Name"
+                        :rules="usernameRules"
+                        label="Username"
                         required
                         prepend-icon="mdi-account-circle"
                         ></v-text-field>
@@ -95,14 +95,14 @@ export default {
         return {
             show_pw: false,
             valid: true,
-            name: null,
+            username: null,
             email: null,
             password: null,
             feedback: null,
             backgroundUrl,
-            nameRules: [
-            v => !!v || 'Name is required',
-            v => (v && v.length <= 20) || 'Name must be less than 20 characters',
+            usernameRules: [
+            v => !!v || 'Username is required',
+            v => (v && v.length <= 20) || 'Username must be less than 20 characters',
             ],
             emailRules: [
             v => !!v || 'E-mail is required',
@@ -119,14 +119,14 @@ export default {
             try {
                 this.$refs.form.validate()
 
-                if(this.name && this.email && this.password) {
+                if(this.username && this.email && this.password) {
                     var {
                         user
                     } = await firebaseInit.auth().createUserWithEmailAndPassword(this.email, this.password);
 
                     // Relate login to a username and date of creation.
                     await firebaseInit.firestore().collection("users").doc(user.uid).set({
-                        name: this.name,
+                        username: this.username,
                         id: user.uid,
                         timestamp: Date.now()
                     })

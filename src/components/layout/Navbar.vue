@@ -50,7 +50,7 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>{{ name ? name : 'no name' }}
+              <v-icon>mdi-account-circle</v-icon>{{ username ? username : 'no username' }}
             </router-link>
           </div>
         </v-btn>
@@ -77,7 +77,7 @@ export default {
   data() {
     return {
         user: null,
-        name: null
+        username: null
     }
   },
   methods: {
@@ -98,7 +98,7 @@ export default {
       .then(snapshot => {
             snapshot.forEach(doc => {
                 // Return first letter capitalized names
-                this.name = doc.data().name.toLowerCase()
+                this.username = doc.data().username.toLowerCase()
                 .split(' ')
                 .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
                 .join(' ');
