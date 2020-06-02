@@ -30,55 +30,71 @@ const actions = {
             timestamp: Date.now()
         })
         // set state of user
-        await commit('setUser', payload.username, user.uid, payload.email);
+        await commit('setUser', payload);
         // redirect to home page
         await router.push({ name: 'Home'});
     },
-    retrieveUserInfo({ commit }) {
-        // query 
-        let user_db = firebaseInit.firestore().collection('users')
+    async retrieveUserInfo({ commit }) {
+        // Only retrieve if there is a user already logged in
+        if (!firebaseInit.auth().currentUser) {
+            return;
+        } else {
+            let user_id = await firebaseInit.auth().currentUser.uid;
 
-        // If someone is logged in
-        if (firebaseInit.auth().currentUser) {
-            // get current user
-            return user_db.where('user_id', '==', firebaseInit.auth().currentUser.uid)
-            .get()
-            .then(snapshot => {
-                snapshot.forEach(doc => {
-                    // Return username, first letter capitalized names
-                    const username = doc.data().username.toLowerCase()
-                    .split(' ')
-                    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-                    .join(' ');
-                    // User id
-                    const user_id = doc.data().user_id;
-                    // Email
-                    const email = doc.data().email;
+            let users = await firebaseInit.firestore().collection('users');
 
-                    // set state of user
-                    commit('setUser', username, user_id, email);
+            await users.where('user_id', '==', user_id).get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        console.log('error:', 'No user_id\'s.');
+                        return;
+                    }  
+                    snapshot.forEach(doc => {
+                        commit('setUser', { 
+                            'username': doc.data().username,
+                            'user_id': doc.data().user_id,
+                            'email': doc.data().email
+                    })
+                    });
                 })
-            })
+                .catch(err => {
+                    console.log('Error getting documents', err);
+            });
         }
     },
-    logout({ commit }) {
-        if (state.username) {
+    async login({ dispatch }, payload) {
+        if(payload.email && payload.password) {
+            await firebaseInit.auth().signInWithEmailAndPassword(payload.email, payload.password)
+            .then(() => {
+                router.push({ name: 'Home' })
+            })
+            .catch(err => {
+                state.feedback = err.message
+            })
+            await dispatch('retrieveUserInfo');
+        }
+        state.feedback = null
+    },
+    async logout({ commit }) {
+        // if (state.username) {
             firebaseInit.auth().signOut().then(() => {
-                router.push({ name: 'Login' })
+                if (router.currentRoute.name != 'Login') {
+                    router.push({ name: 'Login' })
+                }
             }).catch(err => {
                 state.feedback = err.message
             });
             // empty state of user
-            commit('setUser', null, null, null);
-        }
+            await commit('setUser', { 'username': '', 'user_id': '', 'email': '' });
+        // }
     }
 }
 
 const mutations = {
-    setUser: (state, username, user_id, email) => {
-        state.username = username;
-        state.user_id = user_id;
-        state.email = email;
+    setUser: (state, payload) => {
+        state.username = payload.username;
+        state.user_id = payload.user_id;
+        state.email = payload.email;
     }
 }
 
