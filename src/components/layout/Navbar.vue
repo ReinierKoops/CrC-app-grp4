@@ -69,6 +69,7 @@
 
 <script>
 import firebaseInit from '@/firebase/init'
+import { mapGetters } from 'vuex';
 
 firebaseInit.firestore();
 
@@ -79,6 +80,7 @@ export default {
         username: null
     }
   },
+  computed: mapGetters(['isLoggedIn']),
   methods: {
     logout() {
       firebaseInit.auth().signOut().then(() => {
@@ -88,6 +90,8 @@ export default {
   },
   created() {
     let user_db = firebaseInit.firestore().collection('users')
+
+    console.log(this.isLoggedIn)
 
     // If someone is logged in
     if (firebaseInit.auth().currentUser) {
