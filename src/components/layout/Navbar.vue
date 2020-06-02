@@ -50,7 +50,11 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>{{ name ? name : 'no name' }}
+              <v-icon>mdi-account-circle</v-icon>{{ 
+                this.$store.getters.getUsername ? 
+                this.$store.getters.getUsername : 
+                'no username' 
+              }}
             </router-link>
           </div>
         </v-btn>
@@ -59,7 +63,7 @@
         text 
         >
           <div class="center-div-text">
-            <span @click="logout">
+            <span @click="this.logout">
               <v-icon>mdi-logout</v-icon>Log out
             </span>
           </div>              
@@ -68,43 +72,13 @@
 </template>
 
 <script>
-import firebaseInit from '@/firebase/init'
-
-firebaseInit.firestore();
+import { mapActions } from 'vuex';
 
 export default {
   name: 'Navbar',
-  data() {
-    return {
-        user: null,
-        name: null
-    }
-  },
-  methods: {
-    logout() {
-      firebaseInit.auth().signOut().then(() => {
-        this.$router.push({ name: 'Login' })
-      })
-    }
-  },
+  methods: mapActions(['retrieveUserInfo', 'logout']),
   created() {
-    let user_db = firebaseInit.firestore().collection('users')
-
-    // If someone is logged in
-    if (firebaseInit.auth().currentUser) {
-      // get current user
-      return user_db.where('id', '==', firebaseInit.auth().currentUser.uid)
-      .get()
-      .then(snapshot => {
-            snapshot.forEach(doc => {
-                // Return first letter capitalized names
-                this.name = doc.data().name.toLowerCase()
-                .split(' ')
-                .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-                .join(' ');
-            })
-        })
-    }
+    this.retrieveUserInfo();
   }
 }
 </script>

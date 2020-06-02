@@ -23,10 +23,10 @@
                         class="color-and-style-form elevation-10"
                     >
                         <v-text-field
-                        v-model="name"
+                        v-model="username"
                         :counter="20"
-                        :rules="nameRules"
-                        label="Name"
+                        :rules="usernameRules"
+                        label="Username"
                         required
                         prepend-icon="mdi-account-circle"
                         ></v-text-field>
@@ -53,8 +53,8 @@
 
                         <p 
                         class="text-center red--text" 
-                        v-if="feedback">
-                            {{ feedback }}
+                        v-if="this.$store.getters.getFeedback">
+                            {{ this.$store.getters.getFeedback }}
                         </p>
 
                         <v-col
@@ -81,11 +81,8 @@
 </template>
 
 <script>
-import firebaseInit from '@/firebase/init'
-import firebase from 'firebase'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
-
-firebaseInit.firestore();
+import { mapActions } from 'vuex';
 
 export default {
     name: 'Signup',
@@ -95,14 +92,14 @@ export default {
         return {
             show_pw: false,
             valid: true,
-            name: null,
+            username: null,
             email: null,
             password: null,
             feedback: null,
             backgroundUrl,
-            nameRules: [
-            v => !!v || 'Name is required',
-            v => (v && v.length <= 20) || 'Name must be less than 20 characters',
+            usernameRules: [
+            v => !!v || 'Username is required',
+            v => (v && v.length <= 20) || 'Username must be less than 20 characters',
             ],
             emailRules: [
             v => !!v || 'E-mail is required',
@@ -115,37 +112,21 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['createUser']),
         async validate() {
+            this.$refs.form.validate();
+
             try {
-                this.$refs.form.validate()
-
-                if(this.name && this.email && this.password) {
-                    var {
-                        user
-                    } = await firebaseInit.auth().createUserWithEmailAndPassword(this.email, this.password);
-
-                    // Relate login to a username and date of creation.
-                    await firebaseInit.firestore().collection("users").doc(user.uid).set({
-                        name: this.name,
-                        id: user.uid,
-                        timestamp: Date.now()
-                    })
-
-                    // signout
-                    return await firebase
-                        .auth()
-                        .signOut()
-                        .then(() => {
-                            this.$router.push({ name: 'Login'})
-                        })
-                        .catch(err => {
-                            this.feedback = err.message
-                        });
+                const payload = {
+                    'username': this.username,
+                    'email': this.email, 
+                    'password': this.password, 
                 }
+                this.createUser(payload);
             } catch (error) {
                 console.log('error:', error.message);
             }
-       }
+        }
     }
 }
 </script>
