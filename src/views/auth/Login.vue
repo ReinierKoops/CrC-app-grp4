@@ -44,8 +44,8 @@
 
                         <p 
                         class="text-center red--text" 
-                        v-if="feedback">
-                            {{ feedback }}
+                        v-if="this.$store.getters.getFeedback">
+                            {{ this.$store.getters.getFeedback }}
                         </p>
 
                         <v-col
@@ -59,7 +59,7 @@
                             height="50"
                             class="white--text"
                             x-large
-                            @click="login"
+                            @click="loginUser"
                             >
                             Login
                             </v-btn>
@@ -72,10 +72,8 @@
 </template>
 
 <script>
-import firebaseInit from '@/firebase/init'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
-
-firebaseInit.firestore();
+import { mapActions } from 'vuex';
 
 export default {
     name: 'Login',
@@ -98,16 +96,16 @@ export default {
         ]
     }),
     methods: {
-        login() {
-            if(this.email && this.password) {
-                firebaseInit.auth().signInWithEmailAndPassword(this.email, this.password)
-                .then(() => {
-                    this.$router.push({ name: 'Home' })
-                })
-                .catch(err => {
-                    this.feedback = err.message
-                })
-                this.feedback = null
+        ...mapActions(['login']),
+        async loginUser() {
+            try {
+                const payload = {
+                    'email': this.email, 
+                    'password': this.password, 
+                }
+                this.login(payload);
+            } catch (error) {
+                console.log('error:', error.message);
             }
         }
     }
