@@ -76,7 +76,6 @@ export default {
   name: 'Navbar',
   data() {
     return {
-        user: null,
         username: null
     }
   },
