@@ -50,7 +50,11 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>{{ username ? username : 'no username' }}
+              <v-icon>mdi-account-circle</v-icon>{{ 
+                this.$store.getters.getUsername ? 
+                this.$store.getters.getUsername : 
+                'no username' 
+              }}
             </router-link>
           </div>
         </v-btn>
@@ -69,7 +73,7 @@
 
 <script>
 import firebaseInit from '@/firebase/init'
-import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 firebaseInit.firestore();
 
@@ -80,34 +84,9 @@ export default {
         username: null
     }
   },
-  computed: mapGetters(['isLoggedIn']),
-  methods: {
-    logout() {
-      firebaseInit.auth().signOut().then(() => {
-        this.$router.push({ name: 'Login' })
-      })
-    }
-  },
+  methods: mapActions(['retrieveUserInfo', 'logout']),
   created() {
-    let user_db = firebaseInit.firestore().collection('users')
-
-    console.log(this.isLoggedIn)
-
-    // If someone is logged in
-    if (firebaseInit.auth().currentUser) {
-      // get current user
-      return user_db.where('id', '==', firebaseInit.auth().currentUser.uid)
-      .get()
-      .then(snapshot => {
-            snapshot.forEach(doc => {
-                // Return first letter capitalized names
-                this.username = doc.data().username.toLowerCase()
-                .split(' ')
-                .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-                .join(' ');
-            })
-        })
-    }
+    this.retrieveUserInfo();
   }
 }
 </script>

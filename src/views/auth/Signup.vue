@@ -127,7 +127,8 @@ export default {
                     // Relate login to a username and date of creation.
                     await firebaseInit.firestore().collection("users").doc(user.uid).set({
                         username: this.username,
-                        id: user.uid,
+                        email: this.email,
+                        user_id: user.uid,
                         timestamp: Date.now()
                     })
 
