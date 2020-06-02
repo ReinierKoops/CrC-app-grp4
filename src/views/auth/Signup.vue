@@ -81,10 +81,11 @@
 </template>
 
 <script>
+import firebaseInit from '@/firebase/init'
 import firebase from 'firebase'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
 
-firebase.firestore();
+firebaseInit.firestore();
 
 export default {
     name: 'Signup',
@@ -121,10 +122,10 @@ export default {
                 if(this.name && this.email && this.password) {
                     var {
                         user
-                    } = await firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
+                    } = await firebaseInit.auth().createUserWithEmailAndPassword(this.email, this.password);
 
                     // Relate login to a username and date of creation.
-                    await firebase.firestore().collection("users").doc(user.uid).set({
+                    await firebaseInit.firestore().collection("users").doc(user.uid).set({
                         name: this.name,
                         id: user.uid,
                         timestamp: Date.now()
