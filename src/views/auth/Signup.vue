@@ -81,12 +81,11 @@
 </template>
 
 <script>
-// import db from '@/firebase/init'
+import firebaseInit from '@/firebase/init'
 import firebase from 'firebase'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
 
-firebase.firestore();
-// firebase.firestore.setLogLevel('error');
+firebaseInit.firestore();
 
 export default {
     name: 'Signup',
@@ -116,19 +115,37 @@ export default {
         }
     },
     methods: {
-        validate () {
-            this.$refs.form.validate()
+        async validate() {
+            try {
+                this.$refs.form.validate()
 
-            if(this.name && this.email && this.password) {
-                firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                .then(() => {
-                    this.$router.push({ name: 'Home'})
-                })
-                .catch(err => {
-                    this.feedback = err.message
-                })
+                if(this.name && this.email && this.password) {
+                    var {
+                        user
+                    } = await firebaseInit.auth().createUserWithEmailAndPassword(this.email, this.password);
+
+                    // Relate login to a username and date of creation.
+                    await firebaseInit.firestore().collection("users").doc(user.uid).set({
+                        name: this.name,
+                        id: user.uid,
+                        timestamp: Date.now()
+                    })
+
+                    // signout
+                    return await firebase
+                        .auth()
+                        .signOut()
+                        .then(() => {
+                            this.$router.push({ name: 'Login'})
+                        })
+                        .catch(err => {
+                            this.feedback = err.message
+                        });
+                }
+            } catch (error) {
+                console.log('error:', error.message);
             }
-        }
+       }
     }
 }
 </script>
