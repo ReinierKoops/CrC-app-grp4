@@ -1,10 +1,10 @@
 <template>
-    <div class="fixverify">This is the fixverify page!</div>
+    <div class="findfix">This is the find-fix page!</div>
 </template>
 
 <script>
 export default {
-    name: 'Fixverify',
+    name: 'FindFix',
     data() {
         return {
 
