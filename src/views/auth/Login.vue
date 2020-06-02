@@ -72,8 +72,10 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebaseInit from '@/firebase/init'
 import backgroundUrl from '@/assets/img/party_image_gsc.jpg'
+
+firebaseInit.firestore();
 
 export default {
     name: 'Login',
@@ -98,7 +100,7 @@ export default {
     methods: {
         login() {
             if(this.email && this.password) {
-                firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+                firebaseInit.auth().signInWithEmailAndPassword(this.email, this.password)
                 .then(() => {
                     this.$router.push({ name: 'Home' })
                 })
