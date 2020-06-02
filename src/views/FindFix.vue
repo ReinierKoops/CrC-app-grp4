@@ -55,29 +55,32 @@ export default {
             vm.recommendationSwap = null;
             vm.preferenceSwap = null;
 
-        if (event.detail.source == "recommendation") {
-            vm.recommendationSwap = event.detail.id;
-        } else {
-            vm.preferenceSwap = event.detail.id;
-        }
+            if (event.detail.source == "recommendation") {
+                vm.recommendationSwap = event.detail.id;
+            } else {
+                vm.preferenceSwap = event.detail.id;
+            }
         });
         document.addEventListener('dragDropped', function(event) {
-        if (event.detail.source == "recommendation") {
-            vm.recommendationSwap = event.detail.id;
-        } else {
-            vm.preferenceSwap = event.detail.id;
-        }
-
-        if (vm.recommendationSwap != null && vm.preferenceSwap != null) {
-            // Check if song not already in list
-            if (vm.recommendation.includes(vm.preferenceSwap)) {
-                alert("Song is already in the recommendations!");
+            console.log("Hi")
+            if (event.detail.source == "recommendation") {
+                vm.recommendationSwap = event.detail.id;
             } else {
-                // Remove the old song from the recommendation
-                let index = vm.recommendation.indexOf(vm.recommendationSwap);
-                vm.recommendation.splice(index, 1, vm.preferenceSwap);
+                vm.preferenceSwap = event.detail.id;
             }
-        }
+
+            console.log(vm.recommendationSwap);
+            console.log(vm.preferenceSwap);
+            if (vm.recommendationSwap != null && vm.preferenceSwap != null) {
+                // Check if song not already in list
+                if (vm.recommendation.includes(vm.preferenceSwap)) {
+                    alert("Song is already in the recommendations!");
+                } else {
+                    // Remove the old song from the recommendation
+                    let index = vm.recommendation.indexOf(vm.recommendationSwap);
+                    vm.recommendation.splice(index, 1, vm.preferenceSwap);
+                }
+            }
         });
     }
 }
