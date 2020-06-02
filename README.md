@@ -20,5 +20,26 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Deployment on Firebase
+``` bash
+# login Firebase
+firebase login
+
+# init Firebase
+firebase init
+
+# Use an existing project
+# crc-party (crc-party)
+# firestore.rules
+# firestore.indexes.json
+# JavaScript
+# No
+# Yes
+
+# run build to create small build file for deploy
+npm run build
+
+# deploy to firebase
+firebase deploy
+```
