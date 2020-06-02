@@ -50,7 +50,7 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>User
+              <v-icon>mdi-account-circle</v-icon>{{ name ? name : 'no name' }}
             </router-link>
           </div>
         </v-btn>
@@ -68,31 +68,43 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
-import firebase from 'firebase'
+import firebaseInit from '@/firebase/init'
+
+firebaseInit.firestore();
 
 export default {
   name: 'Navbar',
   data() {
     return {
-        user: null
+        user: null,
+        name: null
     }
   },
   methods: {
     logout() {
-      firebase.auth().signOut().then(() => {
+      firebaseInit.auth().signOut().then(() => {
         this.$router.push({ name: 'Login' })
       })
     }
   },
   created() {
-    let ref = db.collection('users')
+    let user_db = firebaseInit.firestore().collection('users')
 
-    console.log(ref)
-
-    // // get current user
-    // const id = ref.where('user_id', '==', firebase.auth().currentUser.uid).get()
-    // console.log(id)     
+    // If someone is logged in
+    if (firebaseInit.auth().currentUser) {
+      // get current user
+      return user_db.where('id', '==', firebaseInit.auth().currentUser.uid)
+      .get()
+      .then(snapshot => {
+            snapshot.forEach(doc => {
+                // Return first letter capitalized names
+                this.name = doc.data().name.toLowerCase()
+                .split(' ')
+                .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+                .join(' ');
+            })
+        })
+    }
   }
 }
 </script>
