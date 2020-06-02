@@ -1,0 +1,17 @@
+{
+    "users": [
+        {
+            "name": "User 1",
+            "preferences": ["Song K", "Song L", "Song M", "Song N", "Song O", "Song P", "Song Q", "Song R", "Song S", "Song T"] 
+        },
+        {
+            "name": "User 2",
+            "preferences": ["Song A", "Song B", "Song C", "Song D", "Song E", "Song F", "Song G", "Song H", "Song I", "Song J"]  
+        },
+        {
+            "name": "User 3",
+            "preferences": ["Song A", "Song B", "Song C", "Song D", "Song E", "Song F", "Song G", "Song H", "Song I", "Song J"] 
+        }
+    ],
+    "recommendation": ["Song A", "Song B", "Song C", "Song D", "Song E", "Song F", "Song G", "Song H", "Song I", "Song J"]
+}
