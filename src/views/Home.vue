@@ -110,7 +110,7 @@
                                 color="#2296F3"
                                 class="white--text"
                                 >
-                                    <v-icon>mdi-comment-eye-outline</v-icon>Task 1: Swap "Algorithm" fairly
+                                    <v-icon>mdi-swap-vertical</v-icon>Task 1: Swap "Algorithm" fairly
                                 </v-btn>
                             </v-card-actions>
                         </v-card>                        
