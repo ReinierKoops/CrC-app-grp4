@@ -50,11 +50,20 @@
             <router-link 
               :to="{ name: 'Home' }"
             >
-              <v-icon>mdi-account-circle</v-icon>{{ 
-                this.$store.getters.getUsername ? 
-                this.$store.getters.getUsername : 
-                'no username' 
-              }}
+              <ul id="parent" v-if="this.$store.getters.getUsername">
+                <li>
+                  <avatar
+                  :username="`${this.$store.getters.getUsername}`"
+                  :size="24"
+                  backgroundColor="white"
+                  color="#2296F3"
+                  ></avatar>
+                </li>
+                <li>{{ this.$store.getters.getUsername }}</li>
+              </ul>
+              <div v-if="!this.$store.getters.getUsername">
+                <v-icon>mdi-account-circle</v-icon>no username
+              </div>
             </router-link>
           </div>
         </v-btn>
@@ -73,12 +82,16 @@
 
 <script>
 import { mapActions } from 'vuex';
+import Avatar from 'vue-avatar'
 
 export default {
   name: 'Navbar',
   methods: mapActions(['retrieveUserInfo', 'logout']),
   created() {
     this.retrieveUserInfo();
+  },
+  components: {
+      Avatar
   }
 }
 </script>
@@ -103,5 +116,22 @@ export default {
   line-height: 25px;
   text-align: center;
   cursor: pointer;
+}
+
+#parent {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#parent > li {
+    display: inline-block;
+}
+
+#parent > li:nth-child(even) {
+  margin-left: 2px;
 }
 </style>
