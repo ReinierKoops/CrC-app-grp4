@@ -90,7 +90,7 @@
                             <v-card-title>
                                 Task 1: Change the order of Algorithm
                             </v-card-title>
-                            <v-card-subtitle class="text-left font-italic">
+                            <v-card-subtitle class="text-left font-italic text-underline">
                                 Is "Algorithm" a fair list?
                             </v-card-subtitle>
                             <v-card-text class="text-left">
@@ -125,7 +125,7 @@
                             <v-card-title>
                                 Task 2: Is "User-created" list fair?
                             </v-card-title>
-                            <v-card-subtitle class="text-left font-italic">
+                            <v-card-subtitle class="text-left font-italic text-underline">
                                 Is "User-created" a fair list?
                             </v-card-subtitle>
                             <v-card-text class="text-left">
@@ -180,5 +180,8 @@ export default {
 <style scoped>
 .add-margin-bottom{
     margin-bottom: 45px;
+}
+.text-underline {
+    text-decoration: underline;    
 }
 </style>>
