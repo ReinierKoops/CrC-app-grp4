@@ -62,15 +62,21 @@ export default {
             }
         });
         document.addEventListener('dragDropped', function(event) {
-            console.log("Hi")
             if (event.detail.source == "recommendation") {
-                vm.recommendationSwap = event.detail.id;
+                if (vm.recommendationSwap != null) {
+                    //Sort the recommendation list
+                    let oldIndex = vm.recommendation.indexOf(vm.recommendationSwap);
+                    let newIndex = vm.recommendation.indexOf(event.detail.id);
+                    
+                    const deleted = vm.recommendation.splice(oldIndex, 1);
+                    vm.recommendation.splice(newIndex, 0, deleted[0]);
+                } else {
+                    vm.recommendationSwap = event.detail.id;
+                }
             } else {
                 vm.preferenceSwap = event.detail.id;
             }
 
-            console.log(vm.recommendationSwap);
-            console.log(vm.preferenceSwap);
             if (vm.recommendationSwap != null && vm.preferenceSwap != null) {
                 // Check if song not already in list
                 if (vm.recommendation.includes(vm.preferenceSwap)) {
