@@ -116,7 +116,6 @@ export default {
 .color-and-style-form{
     background-color: white;
     padding: 20px 35px 5px 35px;
-    border-radius: 7.5px;
 }
 .src-background-img{
     background-repeat: no-repeat;
