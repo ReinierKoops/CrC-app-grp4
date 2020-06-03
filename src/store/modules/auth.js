@@ -13,7 +13,8 @@ const state = {
 const getters = {
     isLoggedIn: state => !!state.username,
     getUsername: state => state.username,
-    getFeedback: state => state.feedback
+    getFeedback: state => state.feedback,
+    getEmail: state => state.email
 }
 
 const actions = {
