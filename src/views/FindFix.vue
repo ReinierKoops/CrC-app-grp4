@@ -122,7 +122,7 @@ export default {
     mounted() {
         let vm = this;
         document.getElementById('task').style.display = "none";
-        axios.get("http://localhost:5001/crc-party-grp4/us-central1/requestFix?uid=" + firebase.auth().currentUser.uid).then(res => {
+        axios.get("https://us-central1-crc-party-grp4.cloudfunctions.net/requestFix?uid=" + firebase.auth().currentUser.uid).then(res => {
             try {
                 vm.task = JSON.parse(res);
                 document.getElementById('task').style.display = "block";   
