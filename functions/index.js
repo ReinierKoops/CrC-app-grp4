@@ -131,7 +131,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{doc-id}').onWrite((cha
                 return a + b;
             }, 0);
 
-            if (sum == fixesRequired) {
+            if (sum >= fixesRequired) {
                 admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
                 // Create aggregation
