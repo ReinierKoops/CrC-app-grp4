@@ -1,6 +1,23 @@
 <template>
     <div class="findfix">
-        <v-container>
+        <v-dialog v-model="dialog" persistent width="500" height="300">
+            <v-card>
+                <v-card-title class="headline">We could not find a task for you!</v-card-title>
+
+                <v-card-text>
+                While fetching a task for you something went wrong! It could be the case that you completed more than 5 tasks of this type or that no task is available at this time. Please try again later!
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text href="/">Return to the homepage</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-progress-circular id="loader" indeterminate="true" size="70" color="primary"></v-progress-circular>
+        <v-container id="task">
             <v-row>
                 <v-col cols="3">
                     <recommendation draggable="true" :songs="recommendation"/>
@@ -30,6 +47,7 @@ import PreferenceList from "@/components/PreferenceList"
 import Recommendation from "@/components/Recommendation"
 import json from "@/assets/json/test-findfix.json"
 import firebase from "firebase"
+import axios from "axios"
 
 export default {
     name: 'FindFix',
@@ -42,7 +60,9 @@ export default {
             users: json.users,
             recommendation: json.recommendation,
             recommendationSwap: null,
-            preferenceSwap: null
+            preferenceSwap: null,
+            task: null,
+            dialog: false
         }
     },
     methods: {
@@ -57,6 +77,9 @@ export default {
                 fair: document.getElementById('fair').checked,
                 explanation: document.getElementById('rationale').value
             });
+        },
+        noTaskFound: function() {
+            this.dialog = true;
         }
     },
     created() {
@@ -98,10 +121,39 @@ export default {
                 }
             }
         });
+    },
+    mounted() {
+        let vm = this;
+        document.getElementById('task').style.display = "none";
+        axios.get("http://localhost:5001/crc-party-grp4/us-central1/requestFix?uid=" + firebase.auth().currentUser.uid).then(res => {
+            try {
+                vm.task = JSON.parse(res);
+                document.getElementById('task').style.display = "block";   
+            } catch (e) {
+                vm.noTaskFound();
+            }
+        }).catch(err => {
+            // Return to home page
+            console.log(err);
+            vm.noTaskFound();
+        });     
     }
 }
 </script>
 
 <style>
-
+.v-progress-circular {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -35px;
+    margin-top: -35px;
+}
+.v-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -150px;
+}
 </style>
