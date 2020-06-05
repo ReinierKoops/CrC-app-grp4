@@ -6,6 +6,9 @@ admin.initializeApp();
 const fixLimit = 5;
 const verifyLimit = 5;
 
+const fixesRequired = 5;
+const verifiesRequired = 5;
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -27,7 +30,7 @@ exports.requestFix = functions.https.onRequest((req, res) => {
 
                         admin.firestore().collection('fixes').where("taskId", "==", curTaskId).then(function (qSnapshot) {
                             var users = qSnapshot.map(function (doc) {
-                                doc.data().userId;
+                                return doc.data().userId;
                             })
                             if (!users.includes(userId)) {
                                 taskId = curTaskId;
@@ -117,4 +120,42 @@ exports.requestVerify = functions.https.onRequest((req, rest) => {
     });
 });
 
+exports.onWriteFix = functions.firestore.document('fixes/{doc-id}').onWrite((change, context) => {
+    const newValue = change.after.data();
+    if (newValue != null && newValue.status == 1) {
+        admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).then(function (qSnapshot) {
+            var allStatus = qSnapshot.map(function (doc) {
+                return doc.data().status;
+            });
+            var sum = allStatus(function (a, b) {
+                return a + b;
+            }, 0);
 
+            if (sum == fixesRequired) {
+                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
+
+                // Create aggregation
+            }
+        });
+    }
+});
+
+exports.onWriteVerify = functions.firestore.document('verifies/{doc-id}').onWrite((change, context) => {
+    const newValue = change.after.data();
+    if (newValue != null && newValue.status == 1) {
+        admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).then(function (qSnapshot) {
+            var allStatus = qSnapshot.map(function (doc) {
+                return doc.data().status;
+            });
+            var sum = allStatus(function (a, b) {
+                return a + b;
+            }, 0);
+
+            if (sum == verifiesRequired) {
+                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
+                
+                // Process result
+            }
+        });
+    }
+});
