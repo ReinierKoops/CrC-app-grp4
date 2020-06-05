@@ -77,9 +77,6 @@ export default {
                 fair: document.getElementById('fair').checked,
                 explanation: document.getElementById('rationale').value
             });
-        },
-        noTaskFound: function() {
-            this.dialog = true;
         }
     },
     created() {
@@ -130,12 +127,12 @@ export default {
                 vm.task = JSON.parse(res);
                 document.getElementById('task').style.display = "block";   
             } catch (e) {
-                vm.noTaskFound();
+                this.dialog = true;
             }
         }).catch(err => {
             // Return to home page
             console.log(err);
-            vm.noTaskFound();
+            this.dialog = true;
         });     
     }
 }
