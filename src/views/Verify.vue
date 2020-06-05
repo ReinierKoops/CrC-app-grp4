@@ -1,6 +1,23 @@
 <template>
     <div class="verify">
-        <v-container>
+        <v-dialog v-model="dialog" persistent width="500" height="300">
+            <v-card>
+                <v-card-title class="headline">We could not find a task for you!</v-card-title>
+
+                <v-card-text>
+                While fetching a task for you something went wrong! It could be the case that you completed more than 5 tasks of this type or that no task is available at this time. Please try again later!
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text href="/">Return to the homepage</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-progress-circular id="loader" indeterminate="true" size="70" color="primary"></v-progress-circular>
+        <v-container id="task">
             <v-row>
                 <v-col cols="3">
                     <recommendation :songs="recommendation"></recommendation>   
@@ -41,6 +58,8 @@
 import PreferenceList from "@/components/PreferenceList"
 import Recommendation from "@/components/Recommendation"
 import json from "@/assets/json/test-verify.json"
+import axios from "axios"
+import firebase from "firebase"
 
 export default {
     name: 'Verify',
@@ -53,13 +72,30 @@ export default {
             users: json.users,
             recommendation: json.recommendation,
             rationales: json.rationales,
-            icon: 'mdi-account'
+            icon: 'mdi-account',
+            dialog: false
         }
     },
     methods: {
         clickSubmit: function () {
             
         }
+    },
+    mounted() {
+        let vm = this;
+        document.getElementById('task').style.display = "none";
+        axios.get("http://localhost:5001/crc-party-grp4/us-central1/requestVerify?uid=" + firebase.auth().currentUser.uid).then(res => {
+            try {
+                vm.task = JSON.parse(res);
+                document.getElementById('task').style.display = "block";
+            } catch (e) {
+                this.dialog = true;
+            }
+        }).catch(err => {
+            // Return to home page
+            console.log(err);
+            this.dialog = true;
+        });
     }
 }
 </script>
