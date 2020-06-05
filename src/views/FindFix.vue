@@ -15,8 +15,8 @@
                         <p><b>Are the "Recommendations" fair to you?</b>
                         <br>Is the list unfair? <b>Drag the preferred songs</b> into the <b>Recommendations</b> and provide a <b>reason</b>. Finally, click <b>Submit</b>.
                         <br>Is the list fair? <b>Check</b> the box, give a <b>reason</b> and click <b>Submit</b>.</p>
-                        <v-checkbox label="By checking this box I say that the recommendation is fair."></v-checkbox>
-                        <v-text-field label="Explanation" outlined/>
+                        <v-checkbox id="fair" label="By checking this box I say that the recommendation is fair."></v-checkbox>
+                        <v-text-field id="rationale" label="Explanation" outlined/>
                         <v-btn v-on:click="clickSubmit">Submit</v-btn>
                     </v-row>
                 </v-col>
@@ -29,6 +29,7 @@
 import PreferenceList from "@/components/PreferenceList"
 import Recommendation from "@/components/Recommendation"
 import json from "@/assets/json/test-findfix.json"
+import firebase from "firebase"
 
 export default {
     name: 'FindFix',
@@ -47,6 +48,15 @@ export default {
     methods: {
         clickSubmit: function() {
             console.log("You clicked submit!");
+            let groupId = 1
+            let userId = firebase.auth().currentUser.uid;
+            firebase.firestore().collection('fixes').doc(groupId + '-' + userId).set({
+                groupId: groupId,
+                userId: userId,
+                fix: this.recommendation,
+                fair: document.getElementById('fair').checked,
+                explanation: document.getElementById('rationale').value
+            });
         }
     },
     created() {
