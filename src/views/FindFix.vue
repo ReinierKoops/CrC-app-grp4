@@ -34,9 +34,13 @@
                         <br>Is the list fair? <b>Check</b> the box, give a <b>reason</b> and click <b>Submit</b>.</p>
                         <v-checkbox id="fair" label="By checking this box I say that the original recommendation made by the algorithm is fair."></v-checkbox>
                         <v-text-field id="rationale" label="Explanation" outlined/>
-                        <v-alert id="alert" type="error">
-                                {{ errorText }}
-                        </v-alert>
+                        <transition name="fade">
+                            <div v-if="show">
+                                <v-alert id="alert" type="error">
+                                    {{ errorText }}
+                                </v-alert>
+                            </div>
+                        </transition> 
                         <v-btn v-on:click="clickSubmit">Submit</v-btn>
                     </v-row>
                 </v-col>
@@ -73,7 +77,8 @@ export default {
             },
             originalList: [],
             dialog: false,
-            errorText: "This is an error!"
+            errorText: "This is an error!",
+            show: false
         }
     },
     methods: {
@@ -109,7 +114,12 @@ export default {
             }        
         },
         displayAlert() {
-            document.getElementById('alert').style.display = "block";
+            if (this.show) {
+                this.show = false;
+                setTimeout(() => this.show = true, 400);
+            } else {
+                this.show = true;
+            }
         }
     },
     created() {
@@ -145,7 +155,8 @@ export default {
 
                 // Check if song not already in list
                 if (recommendations.includes(vm.preferenceSwap)) {
-                    alert("Song is already in the recommendations!");
+                    vm.errorText = "Song is already in the recommendations!"
+                    vm.displayAlert();
                 } else {
                     // Remove the old song from the recommendation
                     let index = recommendations.indexOf(vm.recommendationSwap);
@@ -195,7 +206,13 @@ export default {
     margin-left: -250px;
     margin-top: -150px;
 }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 .v-alert {
-    display: none;
+    display: block;
 }
 </style>

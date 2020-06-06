@@ -37,9 +37,11 @@
                                 <v-radio name="fair" label="No" value="false"/>
                             </v-radio-group>
                             <v-text-field id="rationale" label="Explanation" outlined/>
-                            <v-alert id="alert" type="error">
-                                {{ errorText }}
-                            </v-alert>
+                            <transition name="fade">
+                                <v-alert v-if="show" type="error">
+                                    {{ errorText }}
+                                </v-alert>
+                            </transition>
                             <v-btn v-on:click="clickSubmit">Submit</v-btn>
                         </v-col>
                         <v-col>
@@ -82,7 +84,8 @@ export default {
             },
             icon: 'mdi-account',
             dialog: false,
-            errorText: "I'm an error!"
+            errorText: "I'm an error!",
+            show: false
         }
     },
     methods: {
@@ -114,7 +117,12 @@ export default {
             }
         },
         displayAlert() {
-            document.getElementById('alert').style.display = "block";
+            if (this.show) {
+                this.show = false;
+                setTimeout(() => this.show = true, 400);
+            } else {
+                this.show = true;
+            }
         }
     },
     mounted() {
@@ -131,16 +139,20 @@ export default {
         }).catch(err => {
             // Return to home page
             console.log(err);
-            //this.dialog = true;
-            document.getElementById('task').style.display = "block";
-            document.getElementById('loader').style.display = "none";
+            this.dialog = true;
         });
     }
 }
 </script>
 
 <style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 .v-alert {
-    display: none;
+    display: block;
 }
 </style>
