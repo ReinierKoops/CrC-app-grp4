@@ -21,6 +21,7 @@
 
         <v-btn 
         text
+        v-if="!this.$store.getters.isLoggedIn"
         >
           <div class="center-div-text">
             <router-link 
@@ -33,6 +34,7 @@
 
         <v-btn 
         text 
+        v-if="!this.$store.getters.isLoggedIn"
         >
           <div class="center-div-text">
             <router-link 
@@ -45,6 +47,7 @@
 
         <v-btn 
         text 
+        v-if="this.$store.getters.isLoggedIn"
         >
           <div class="center-div-text">
             <router-link 
@@ -70,6 +73,7 @@
 
         <v-btn 
         text 
+        v-if="this.$store.getters.isLoggedIn"
         >
           <div class="center-div-text">
             <span @click="this.logout">

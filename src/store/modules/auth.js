@@ -77,17 +77,15 @@ const actions = {
         state.feedback = null
     },
     async logout({ commit }) {
-        // if (state.username) {
-            firebaseInit.auth().signOut().then(() => {
-                if (router.currentRoute.name != 'Login') {
-                    router.push({ name: 'Login' })
-                }
-            }).catch(err => {
-                state.feedback = err.message
-            });
-            // empty state of user
-            await commit('setUser', { 'username': '', 'user_id': '', 'email': '' });
-        // }
+        firebaseInit.auth().signOut().then(() => {
+            if (router.currentRoute.name != 'Login') {
+                router.push({ name: 'Login' })
+            }
+        }).catch(err => {
+            state.feedback = err.message
+        });
+        // empty state of user
+        await commit('setUser', { 'username': '', 'user_id': '', 'email': '' });
     }
 }
 
