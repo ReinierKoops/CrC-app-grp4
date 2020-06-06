@@ -12,7 +12,7 @@
 
                 <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" text href="/">Return to the homepage</v-btn>
+                <v-btn :block="true" color="#2296F3" class="white--text" :to="{ name: 'Home' }">Return to the homepage</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -63,6 +63,7 @@
 <script>
 import PreferenceList from "@/components/PreferenceList"
 import Recommendation from "@/components/Recommendation"
+import router from '../router/index'
 import axios from "axios"
 import firebase from "firebase"
 
@@ -111,7 +112,7 @@ export default {
                         explanation: explanation
                     }).then(() => {
                         // Go to the home page
-                        window.location.href = '/';
+                        router.push({ name: 'Home' })
                     });
                 }
             }
