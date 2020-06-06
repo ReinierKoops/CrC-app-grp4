@@ -37,6 +37,9 @@
                                 <v-radio name="fair" label="No" value="false"/>
                             </v-radio-group>
                             <v-text-field id="rationale" label="Explanation" outlined/>
+                            <v-alert id="alert" type="error">
+                                {{ errorText }}
+                            </v-alert>
                             <v-btn v-on:click="clickSubmit">Submit</v-btn>
                         </v-col>
                         <v-col>
@@ -78,7 +81,8 @@ export default {
                 preferences: []
             },
             icon: 'mdi-account',
-            dialog: false
+            dialog: false,
+            errorText: "I'm an error!"
         }
     },
     methods: {
@@ -86,13 +90,15 @@ export default {
             let userId = firebase.auth().currentUser.uid;
             let fair = document.querySelector('input[name="fair"]:checked');
             if (fair == null) {
-                console.log("Please select whether the list is fair");
+                this.errorText = "Please select whether the list is fair!";
+                this.displayAlert();
             } else {
                 fair = fair.value;
                 console.log(fair);
                 let explanation = document.getElementById('rationale').value;
                 if (explanation.length < 100) {
-                    console.log("Please provide sufficient explanation!");
+                    this.errorText = "Please provide more explanation!";
+                    this.displayAlert();
                 } else {
                     firebase.firestore().collection('verifies').doc(this.task.taskId + '-' + userId).set({
                         taskId: this.task.taskId,
@@ -106,6 +112,9 @@ export default {
                     });
                 }
             }
+        },
+        displayAlert() {
+            document.getElementById('alert').style.display = "block";
         }
     },
     mounted() {
@@ -131,5 +140,7 @@ export default {
 </script>
 
 <style>
-
+.v-alert {
+    display: none;
+}
 </style>

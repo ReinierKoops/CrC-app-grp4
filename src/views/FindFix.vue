@@ -34,6 +34,9 @@
                         <br>Is the list fair? <b>Check</b> the box, give a <b>reason</b> and click <b>Submit</b>.</p>
                         <v-checkbox id="fair" label="By checking this box I say that the original recommendation made by the algorithm is fair."></v-checkbox>
                         <v-text-field id="rationale" label="Explanation" outlined/>
+                        <v-alert id="alert" type="error">
+                                {{ errorText }}
+                        </v-alert>
                         <v-btn v-on:click="clickSubmit">Submit</v-btn>
                     </v-row>
                 </v-col>
@@ -69,7 +72,8 @@ export default {
                 users_order: []
             },
             originalList: [],
-            dialog: false
+            dialog: false,
+            errorText: "This is an error!"
         }
     },
     methods: {
@@ -80,12 +84,15 @@ export default {
             let string2 = JSON.stringify(this.task.algorithm);
             let explanation = document.getElementById('rationale').value;
             if (string1 == string2 && !fair) {
-                console.log("The list is not fair but still the same");
+                this.errorText = "You say the list is not fair but the list has not been changed!";
+                this.displayAlert();
             } else if (string1 != string2 && fair) {
-                console.log("The list is fair but changes are made");
+                this.errorText = "You say the list is fair but you have changed the original list!";
+                this.displayAlert();
             } else {
                 if (explanation.length < 100) {
-                    console.log("Please provide sufficient explanation!");
+                    this.errorText = "Please provide more explanation!";
+                    this.displayAlert();
                 } else {
                     firebase.firestore().collection('fixes').doc(this.task.taskId + '-' + userId).set({
                         taskId: this.task.taskId,
@@ -100,6 +107,9 @@ export default {
                     });
                 }
             }        
+        },
+        displayAlert() {
+            document.getElementById('alert').style.display = "block";
         }
     },
     created() {
@@ -184,5 +194,8 @@ export default {
     left: 50%;
     margin-left: -250px;
     margin-top: -150px;
+}
+.v-alert {
+    display: none;
 }
 </style>
