@@ -8,13 +8,17 @@ const state = {
     user_id: null,
     email: null,
     feedback: null,
+    fixes_done: null,
+    verifies_done: null,
 }
 
 const getters = {
     isLoggedIn: state => !!state.username,
     getUsername: state => state.username,
     getFeedback: state => state.feedback,
-    getEmail: state => state.email
+    getEmail: state => state.email,
+    getFixesDone: state => state.fixes_done,
+    getVerifiesDone: state => state.verifies_done
 }
 
 const actions = {
@@ -28,7 +32,9 @@ const actions = {
             username: payload.username,
             email: payload.email,
             user_id: user.uid,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            fixes_done: 0,
+            verifies_done: 0
         })
         // set state of user
         await commit('setUser', payload);
@@ -54,7 +60,9 @@ const actions = {
                         commit('setUser', { 
                             'username': doc.data().username,
                             'user_id': doc.data().user_id,
-                            'email': doc.data().email
+                            'email': doc.data().email,
+                            'fixes_done': doc.data().fixes_done,
+                            'verifies_done': doc.data().verifies_done
                     })
                     });
                 })
@@ -85,7 +93,7 @@ const actions = {
             state.feedback = err.message
         });
         // empty state of user
-        await commit('setUser', { 'username': '', 'user_id': '', 'email': '' });
+        await commit('setUser', { 'username': '', 'user_id': '', 'email': '' , 'fixes_done': '', 'verifies_done': ''});
     }
 }
 
@@ -94,6 +102,8 @@ const mutations = {
         state.username = payload.username;
         state.user_id = payload.user_id;
         state.email = payload.email;
+        state.fixes_done = payload.fixes_done;
+        state.verifies_done = payload.verifies_done;
     }
 }
 
