@@ -144,7 +144,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
         if (sum >= fixesRequired) {
             admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
-            // Create aggregation
+            // TODO: Create aggregation and write to db
         }
     }
 });
@@ -161,7 +161,7 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
         if (sum >= verifiesRequired) {
             admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
             
-            // Process result
+            // TODO: Create result aggregation and write to db
         }
     }
 });
