@@ -11,7 +11,7 @@ google-cloud-firestore, spotipy, uuid, json
 python3 fairness_script.py --ntasks 1 --ntracks 10 --members 3 --preferences 5 --recommended 5
 
 # --playlist default '37i9dQZEVXbKCF6dqVpDkS' (NL Top 50)
-# all vparameters above are equal to default
+# all parameters above are equal to default
 ```
 ## Generate Preferences
 In account to generate synthetic data:
@@ -79,10 +79,10 @@ To connect our Firebase Project with Python we use google-cloud-firesore API. Th
 1) Get *auth.json* file from Firebase Console *Settings->Service Account->Generate New Key* (Rename and put in the main folder)
 2) Export environment variable with path to *auth.json* file with:
 ```
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "auth_file.json"
 os.system("echo $GOOGLE_APPLICATION_CREDENTIALS")
 ```
-3) Connect to Firestore CLient
+3) Connect to Firestore Client
 ```
 db = firestore.Client()
 ```
