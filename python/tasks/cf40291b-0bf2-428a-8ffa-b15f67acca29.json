@@ -1,0 +1,31 @@
+{
+  "taskId": "cf40291b-0bf2-428a-8ffa-b15f67acca29",
+  "song_list": [
+    {"id": "4umIPjkehX1r7uhmGvXiSV", "title": "Intentions (feat. Quavo)", "artist": "Justin Bieber"},
+    {"id": "5RqR4ZCCKJDcBLIn4sih9l", "title": "Party Girl", "artist": "StaySolidRocky"},
+    ...
+  ],
+  "song_user_pref_0": [
+    {"id": "4w47S36wQGBhGg073q3nt7", "title": "TKN (feat. Travis Scott)", "artist": "ROSAL\u00cdA"},
+    {"id": "14wf185UxfNbSy8dwt4r4q", "title": "MAMACITA", "artist": "Black Eyed Peas"},
+    ...
+  ],
+
+  "song_user_pref_1": [
+    {"id": "14wf185UxfNbSy8dwt4r4q", "title": "MAMACITA", "artist": "Black Eyed Peas"},
+    {"id": "4w47S36wQGBhGg073q3nt7", "title": "TKN (feat. Travis Scott)", "artist": "ROSAL\u00cdA"},
+    ...
+  ],
+  "song_user_pref_2": [
+    {"id": "2grAr8pWMuLWn8ZYEE9wDV", "title": "Never Seen the Rain", "artist": "Tones And I"},
+    {"id": "4HBZA5flZLE435QTztThqH", "title": "Stuck with U (with Justin Bieber)", "artist": "Ariana Grande"},
+    ...
+  ],
+  "algorithm": [
+    {"id": "2grAr8pWMuLWn8ZYEE9wDV", "title": "Never Seen the Rain", "artist": "Tones And I"},
+    {"id": "4w47S36wQGBhGg073q3nt7", "title": "TKN (feat. Travis Scott)", "artist": "ROSAL\u00cdA"},
+    ...
+  ],
+  "users_order": [2, 0, 1, 2, 1],
+  "status": 0
+}
