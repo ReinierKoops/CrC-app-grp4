@@ -3,6 +3,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
+const increment = admin.firestore.FieldValue.increment(1);
+
 const fixLimit = 5;
 const verifyLimit = 5;
 
@@ -22,6 +24,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
     var userFixes = user.fixes_done;
 
     var taskId;
+    var newTask = false;
 
     var fixes = await admin.firestore().collection('fixes').where("userId", "==", userId).where("status", "==", 0).get();
     if (!fixes.empty) { // Check if task is open for user
@@ -40,6 +43,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
             }
             if (!users.includes(userId)) {
                 taskId = curTaskId;
+                newTask = true;
                 break;
             }
         }
@@ -59,6 +63,9 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
             res.send(JSON.stringify(task.data()));
         });
+        if (newTask) {
+            admin.firestore().collection('users').doc(userId).update({fixes_done: increment});
+        }
     } else { // No task could be found
         res.send("No task found!");
     }
