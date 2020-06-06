@@ -26,10 +26,11 @@
                 >
                     <v-row 
                     cols="5"
-                    class="elevation-10 add-margin-bottom"
+                    class="elevation-10 add-margin-bottom max-width"
                     >
                         <v-col
                         cols="7" 
+                        
                         >
                             <v-card
                             color="blue"
@@ -65,7 +66,7 @@
                     </v-row>
 
                     <v-row 
-                    class="rounded-card"
+                    class="rounded-card max-width"
                     align="center"
                     justify="center"                    
                     cols="7"
@@ -86,7 +87,7 @@
                     justify="center"
                     cols="6"
                     >
-                        <v-card class="elevation-10">
+                        <v-card class="elevation-10" min-height="264px">
                             <v-card-title>
                                 Task 1: Change the order of Algorithm
                             </v-card-title>
@@ -121,7 +122,7 @@
                     justify="center"                    
                     cols="6"
                     >
-                        <v-card class="elevation-10">
+                        <v-card class="elevation-10" min-height="286px">
                             <v-card-title>
                                 Task 2: Is "User-created" list fair?
                             </v-card-title>
@@ -183,5 +184,10 @@ export default {
 }
 .text-underline {
     text-decoration: underline;    
+}
+.max-width{
+    max-width: 640px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 </style>>
