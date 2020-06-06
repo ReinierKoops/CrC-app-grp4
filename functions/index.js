@@ -87,7 +87,7 @@ exports.requestVerify = functions.https.onRequest(async (req, rest) => {
     if (!verifies.empty) { // Check if task is open for user
         taskId = verifies.docs[0].data().taskId;
     } else if (userVerifies < verifyLimit) { // Check if user limit is not reached
-        var tasks = await admin.firestore().collection('tasks').where("status", "==", 0).get();
+        var tasks = await admin.firestore().collection('tasks').where("status", "==", 1).get();
         var doc;
         for (doc of tasks.docs) {
             curTaskId = doc.data().taskId;
@@ -119,7 +119,7 @@ exports.requestVerify = functions.https.onRequest(async (req, rest) => {
                 userId: userId,
                 status: 0
             }
-            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify);\
+            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify);
             // TODO: Get the aggregate
             var task = await admin.firestore().collection('tasks').doc(taskId).get(); // TODO: Replace by an aggregate
             res.send(JSON.stringify(task.data()));
