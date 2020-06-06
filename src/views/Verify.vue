@@ -16,32 +16,33 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-progress-circular id="loader" indeterminate="true" size="70" color="primary"></v-progress-circular>
+        <v-progress-circular id="loader" indeterminate size="70" color="primary"></v-progress-circular>
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation :songs="recommendation"></recommendation>   
+                    <recommendation :songs="task.fix"></recommendation>
+                    <recommendation :songs="task.recommendation"></recommendation>   
                 </v-col>
                 <v-col>
                     <v-row>
-                        <v-col v-for="user in users" :key="user">
-                            <preference-list :songs="user.preferences" :name="user.name"></preference-list>
+                        <v-col v-for="(prefs, index) in users" :key="index">
+                            <preference-list :songs="prefs" :name="'User ' + (index + 1)"></preference-list>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
-                            <b>Are the recommendations fair to you?</b>
+                            <b>Are the <i>new</i> recommendations fair to you?</b>
                             <v-radio-group>
-                                <v-radio label="Yes" value="true"/>
-                                <v-radio label="No" value="false"/>
+                                <v-radio name="fair" label="Yes" value="true"/>
+                                <v-radio name="fair" label="No" value="false"/>
                             </v-radio-group>
-                            <v-text-field label="Explanation" outlined/>
+                            <v-text-field id="rationale" label="Explanation" outlined/>
                             <v-btn v-on:click="clickSubmit">Submit</v-btn>
                         </v-col>
                         <v-col>
                             <b>Explanations on why the recommendation <i>was</i> not fair:</b>
                             <v-list disabled>
-                                <v-list-item v-for="rationale in rationales" :key="rationale">
+                                <v-list-item v-for="(rationale, index) in task.explanations" :key="index">
                                     <v-list-item-icon><v-icon v-text="icon"/></v-list-item-icon>
                                     <v-list-item-content><v-list-item-title v-text="rationale"/></v-list-item-content>
                                 </v-list-item>
@@ -57,7 +58,6 @@
 <script>
 import PreferenceList from "@/components/PreferenceList"
 import Recommendation from "@/components/Recommendation"
-import json from "@/assets/json/test-verify.json"
 import axios from "axios"
 import firebase from "firebase"
 
@@ -69,16 +69,43 @@ export default {
     },
     data() {
         return {
-            users: json.users,
-            recommendation: json.recommendation,
-            rationales: json.rationales,
+            task: {
+                taskId: "",
+                userId: "",
+                recommendation: [],
+                fix: [],
+                explanations: [],
+                preferences: []
+            },
             icon: 'mdi-account',
             dialog: false
         }
     },
     methods: {
         clickSubmit: function () {
-            
+            let userId = firebase.auth().currentUser.uid;
+            let fair = document.querySelector('input[name="fair"]:checked');
+            if (fair == null) {
+                console.log("Please select whether the list is fair");
+            } else {
+                fair = fair.value;
+                console.log(fair);
+                let explanation = document.getElementById('rationale').value;
+                if (explanation.length < 100) {
+                    console.log("Please provide sufficient explanation!");
+                } else {
+                    firebase.firestore().collection('verifies').doc(this.task.taskId + '-' + userId).set({
+                        taskId: this.task.taskId,
+                        userId: userId,
+                        status: 1,
+                        fair: fair,
+                        explanation: explanation
+                    }).then(() => {
+                        // Go to the home page
+                        window.location.href = '/';
+                    });
+                }
+            }
         }
     },
     mounted() {
@@ -88,14 +115,16 @@ export default {
             try {
                 vm.task = res.data;
                 document.getElementById('task').style.display = "block";
-                document.getElementById('loader').style.display = "none"; 
+                document.getElementById('loader').style.display = "none";
             } catch (e) {
                 this.dialog = true;
             }
         }).catch(err => {
             // Return to home page
             console.log(err);
-            this.dialog = true;
+            //this.dialog = true;
+            document.getElementById('task').style.display = "block";
+            document.getElementById('loader').style.display = "none";
         });
     }
 }
