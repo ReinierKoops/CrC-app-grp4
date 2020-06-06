@@ -21,7 +21,7 @@
             <v-row>
                 <v-col cols="3">
                     <recommendation :songs="task.fix"></recommendation>
-                    <recommendation :songs="task.recommendation"></recommendation>   
+                    <recommendation :songs="task.algorithm"></recommendation>   
                 </v-col>
                 <v-col>
                     <v-row>
@@ -77,7 +77,7 @@ export default {
             task: {
                 taskId: "",
                 userId: "",
-                recommendation: [],
+                algorithm: [],
                 fix: [],
                 explanations: [],
                 preferences: []
