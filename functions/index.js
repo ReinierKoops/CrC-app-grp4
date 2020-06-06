@@ -145,6 +145,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
 
 exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (change, context) => {
     const newValue = change.after.data();
+
     if (newValue != null && newValue.status == 1) {
         var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).get();
         var allStatus = fixes.docs.map((doc) => doc.data().status);
@@ -155,7 +156,35 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
         if (sum >= fixesRequired) {
             admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
-            // TODO: Create aggregation and write to db
+            var count = 0;
+            // dict with just song count
+            var song_list_count = {}
+            // dict with users-set
+            var song_users = {}
+            
+            fixes.then(snapshot => {
+                snapshot.forEach(doc => {
+                    // plus casts fair: true = 1, false = 0
+                    count = count + +(doc.data().fair)
+
+                    if (count >= 3) {
+                        // If fair >= 3 -> put in results
+                        // TODO
+                        return;
+                    } else {
+                        // If fair < 3 -> put in verify
+
+                        // Iterate over all the song in the list
+
+                        // Unique song in the list
+                        
+                        // 
+                    }
+                });
+            }).catch(err => {
+                console.log('Error getting documents', err);
+        });
+            
         }
     }
 });
