@@ -120,9 +120,20 @@ exports.requestVerify = functions.https.onRequest(async (req, rest) => {
                 status: 0
             }
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify);
-            // TODO: Get the aggregate
-            var task = await admin.firestore().collection('tasks').doc(taskId).get(); // TODO: Replace by an aggregate
-            res.send(JSON.stringify(task.data()));
+            
+            var aggregate = await admin.firestore().collection('aggregates').doc(taskId).get();
+            var task = await admin.firestore().collection('tasks').doc(taskId).get();
+
+            var newTask = {
+                taskId: task.taskId,
+                userId: userId,
+                algorithm: task.algorithm,
+                fix: aggregate.fix,
+                explanations: aggregate.explanations,
+                preferences: [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]
+            }
+
+            res.send(JSON.stringify(newTask));
         });
         if (newTask) {
             admin.firestore().collection('users').doc(userId).update({verifies_done: increment});
