@@ -13,6 +13,9 @@ const verifiesRequired = 5;
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 exports.requestFix = functions.https.onRequest(async (req, res) => {
+    res.set('Access-Control-Allow-Origin', "*");
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+
     var userId = req.query.uid;
     var user = await admin.firestore().collection('users').doc(userId).get();
     user = user.data();
@@ -33,7 +36,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
         
             var users = [];
             if (!fixes.empty) {
-                users.append(fixes.docs.map((doc) => doc.data().userId));
+                users = users.concat(fixes.docs.map((doc) => doc.data().userId));
             }
             if (!users.includes(userId)) {
                 taskId = curTaskId;

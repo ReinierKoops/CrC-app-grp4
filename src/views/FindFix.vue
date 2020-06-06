@@ -16,23 +16,23 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-progress-circular id="loader" indeterminate="true" size="70" color="primary"></v-progress-circular>
+        <v-progress-circular id="loader" indeterminate size="70" color="primary"></v-progress-circular>
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation draggable="true" :songs="recommendation"/>
+                    <recommendation draggable="true" :songs="task.algorithm"/>
                 </v-col>
                 <v-col>
                     <v-row>
-                        <v-col v-for="user in users" :key="user">
-                            <preference-list draggable="true" :songs="user.preferences" :name="user.name"/>
+                        <v-col v-for="(prefs, index) in [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]" :key="index">
+                            <preference-list draggable="true" :songs="prefs" :name="'User ' + (index + 1)"/>
                         </v-col>
                     </v-row>
                     <v-row>
                         <p><b>Are the "Recommendations" fair to you?</b>
                         <br>Is the list unfair? <b>Drag the preferred songs</b> into the <b>Recommendations</b> and provide a <b>reason</b>. Finally, click <b>Submit</b>.
                         <br>Is the list fair? <b>Check</b> the box, give a <b>reason</b> and click <b>Submit</b>.</p>
-                        <v-checkbox id="fair" label="By checking this box I say that the recommendation is fair."></v-checkbox>
+                        <v-checkbox id="fair" label="By checking this box I say that the original recommendation made by the algorithm is fair."></v-checkbox>
                         <v-text-field id="rationale" label="Explanation" outlined/>
                         <v-btn v-on:click="clickSubmit">Submit</v-btn>
                     </v-row>
@@ -45,7 +45,6 @@
 <script>
 import PreferenceList from "@/components/PreferenceList"
 import Recommendation from "@/components/Recommendation"
-import json from "@/assets/json/test-findfix.json"
 import firebase from "firebase"
 import axios from "axios"
 
@@ -55,28 +54,52 @@ export default {
       PreferenceList,
       Recommendation
     },
-    data() {
+    data() {     
         return {
-            users: json.users,
-            recommendation: json.recommendation,
             recommendationSwap: null,
             preferenceSwap: null,
-            task: null,
+            task: {
+                algorithm: [],
+                song_list: [],
+                song_user_pref_0: [],
+                song_user_pref_1: [],
+                song_user_pref_2: [],
+                status: 0,
+                taskId: "",
+                users_order: []
+            },
+            originalList: [],
             dialog: false
         }
     },
     methods: {
         clickSubmit: function() {
-            console.log("You clicked submit!");
-            let groupId = 1
             let userId = firebase.auth().currentUser.uid;
-            firebase.firestore().collection('fixes').doc(groupId + '-' + userId).set({
-                groupId: groupId,
-                userId: userId,
-                fix: this.recommendation,
-                fair: document.getElementById('fair').checked,
-                explanation: document.getElementById('rationale').value
-            });
+            let fair = document.getElementById('fair').checked;
+            let string1 = JSON.stringify(this.originalList);
+            let string2 = JSON.stringify(this.task.algorithm);
+            let explanation = document.getElementById('rationale').value;
+            if (string1 == string2 && !fair) {
+                console.log("The list is not fair but still the same");
+            } else if (string1 != string2 && fair) {
+                console.log("The list is fair but changes are made");
+            } else {
+                if (explanation.length < 100) {
+                    console.log("Please provide sufficient explanation!");
+                } else {
+                    firebase.firestore().collection('fixes').doc(this.task.taskId + '-' + userId).set({
+                        taskId: this.task.taskId,
+                        userId: userId,
+                        status: 1,
+                        fix: this.task.algorithm,
+                        fair: fair,
+                        explanation: explanation
+                    }).then(() => {
+                        // Go to the home page
+                        window.location.href = '/';
+                    });
+                }
+            }        
         }
     },
     created() {
@@ -92,14 +115,15 @@ export default {
             }
         });
         document.addEventListener('dragDropped', function(event) {
+            let recommendations = vm.task.algorithm.map((song) => song.id);
             if (event.detail.source == "recommendation") {
                 if (vm.recommendationSwap != null) {
                     //Sort the recommendation list
-                    let oldIndex = vm.recommendation.indexOf(vm.recommendationSwap);
-                    let newIndex = vm.recommendation.indexOf(event.detail.id);
+                    let oldIndex = recommendations.indexOf(vm.recommendationSwap);
+                    let newIndex = recommendations.indexOf(event.detail.id);
                     
-                    const deleted = vm.recommendation.splice(oldIndex, 1);
-                    vm.recommendation.splice(newIndex, 0, deleted[0]);
+                    const deleted = vm.task.algorithm.splice(oldIndex, 1);
+                    vm.task.algorithm.splice(newIndex, 0, deleted[0]);
                 } else {
                     vm.recommendationSwap = event.detail.id;
                 }
@@ -108,13 +132,20 @@ export default {
             }
 
             if (vm.recommendationSwap != null && vm.preferenceSwap != null) {
+
                 // Check if song not already in list
-                if (vm.recommendation.includes(vm.preferenceSwap)) {
+                if (recommendations.includes(vm.preferenceSwap)) {
                     alert("Song is already in the recommendations!");
                 } else {
                     // Remove the old song from the recommendation
-                    let index = vm.recommendation.indexOf(vm.recommendationSwap);
-                    vm.recommendation.splice(index, 1, vm.preferenceSwap);
+                    let index = recommendations.indexOf(vm.recommendationSwap);
+                    let song;
+                    for (song of vm.task.song_list) {
+                        if (song.id == vm.preferenceSwap) {
+                            break;
+                        }
+                    }
+                    vm.task.algorithm.splice(index, 1, song);
                 }
             }
         });
@@ -122,16 +153,17 @@ export default {
     mounted() {
         let vm = this;
         document.getElementById('task').style.display = "none";
-        axios.get("https://us-central1-crc-party-grp4.cloudfunctions.net/requestFix?uid=" + firebase.auth().currentUser.uid).then(res => {
+        axios.get("/requestFix?uid=" + firebase.auth().currentUser.uid).then(res => {
             try {
-                vm.task = JSON.parse(res);
-                document.getElementById('task').style.display = "block";   
+                vm.task = res.data;
+                vm.originalList = [...vm.task.algorithm];
+                document.getElementById('task').style.display = "block";
+                document.getElementById('loader').style.display = "none";
             } catch (e) {
                 this.dialog = true;
             }
-        }).catch(err => {
+        }).catch(() => {
             // Return to home page
-            console.log(err);
             this.dialog = true;
         });     
     }

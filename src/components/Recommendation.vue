@@ -2,8 +2,8 @@
   <div>
     <h3>Recommendations</h3>  
     <v-list>
-      <v-list-item :draggable="draggable" v-for="song in songs" :id="song" :key="song" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
-        <v-list-item-content><v-list-item-title v-text="song"/></v-list-item-content>
+      <v-list-item :draggable="draggable" v-for="song in songs" :id="song.id" :key="song.title" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
+        <v-list-item-content><v-list-item-title v-text="song.title"/></v-list-item-content>
       </v-list-item>
     </v-list>    
   </div>
