@@ -33,9 +33,9 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
         var tasks = await admin.firestore().collection('tasks').where("status", "==", 0).get();
         var doc;
         for (doc of tasks.docs) {
-            curTaskId = doc.data().taskId;
+            var curTaskId = doc.data().taskId;
 
-            var fixes = await admin.firestore().collection('fixes').where("taskId", "==", curTaskId).get();
+            fixes = await admin.firestore().collection('fixes').where("taskId", "==", curTaskId).get();
         
             var users = [];
             if (!fixes.empty) {
@@ -71,7 +71,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
     }
 });
 
-exports.requestVerify = functions.https.onRequest(async (req, rest) => {
+exports.requestVerify = functions.https.onRequest(async (req, res) => {
     res.set('Access-Control-Allow-Origin', "*");
     res.set('Access-Control-Allow-Methods', 'GET, POST');
 
@@ -90,10 +90,10 @@ exports.requestVerify = functions.https.onRequest(async (req, rest) => {
         var tasks = await admin.firestore().collection('tasks').where("status", "==", 1).get();
         var doc;
         for (doc of tasks.docs) {
-            curTaskId = doc.data().taskId;
+            var curTaskId = doc.data().taskId;
 
             var fixes = await admin.firestore().collection('fixes').where("taskId", "==", curTaskId).get();
-            var verifies = await admin.firestore().collection('verifies').where("taskId", "==", curTaskId).get();
+            verifies = await admin.firestore().collection('verifies').where("taskId", "==", curTaskId).get();
         
             var users = [];
             if (!fixes.empty) {
