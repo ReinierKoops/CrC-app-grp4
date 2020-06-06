@@ -84,10 +84,11 @@ export default {
     mounted() {
         let vm = this;
         document.getElementById('task').style.display = "none";
-        axios.get("https://us-central1-crc-party-grp4.cloudfunctions.net/requestVerify?uid=" + firebase.auth().currentUser.uid).then(res => {
+        axios.get("/requestVerify?uid=" + firebase.auth().currentUser.uid).then(res => {
             try {
-                vm.task = JSON.parse(res);
+                vm.task = res.data;
                 document.getElementById('task').style.display = "block";
+                document.getElementById('loader').style.display = "none"; 
             } catch (e) {
                 this.dialog = true;
             }
