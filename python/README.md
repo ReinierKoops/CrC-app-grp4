@@ -9,6 +9,7 @@ google-cloud-firestore, spotipy, uuid, json
 ## Usage
 ```
 python3 fairness_script.py --ntasks 1 --ntracks 10 --members 3 --preferences 5 --recommended 5
+
 # --playlist default '37i9dQZEVXbKCF6dqVpDkS' (NL Top 50)
 # all vparameters above are equal to default
 ```
