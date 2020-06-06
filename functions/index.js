@@ -72,52 +72,61 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
 });
 
 exports.requestVerify = functions.https.onRequest(async (req, rest) => {
+    res.set('Access-Control-Allow-Origin', "*");
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+
     var userId = req.query.uid;
     var user = await admin.firestore().collection('users').doc(userId).get();
     user = user.data();
-    var userFixes = user.fixes_done;
+    var userVerifies = user.verifies_done;
 
     var taskId;
+    var newTask = false;
 
     var verifies = await admin.firestore().collection('verifies').where("userId", "==", userId).where("status", "==", 0).get();
     if (!verifies.empty) { // Check if task is open for user
         taskId = verifies.docs[0].data().taskId;
-    } else if (userFixes < fixLimit) { // Check if user limit is not reached
-        var tasks = await admin.firestore().collection('tasks').where("status", "==", 1).get();
+    } else if (userVerifies < verifyLimit) { // Check if user limit is not reached
+        var tasks = await admin.firestore().collection('tasks').where("status", "==", 0).get();
         var doc;
         for (doc of tasks.docs) {
             curTaskId = doc.data().taskId;
 
             var fixes = await admin.firestore().collection('fixes').where("taskId", "==", curTaskId).get();
             var verifies = await admin.firestore().collection('verifies').where("taskId", "==", curTaskId).get();
+        
             var users = [];
             if (!fixes.empty) {
-                users.push(fixes.docs.map((doc) => doc.data().userId));
+                users = users.concat(fixes.docs.map((doc) => doc.data().userId));
             }
             if (!verifies.empty) {
-                users.push(verifies.docs.map((doc) => doc.data().userId));
+                users = users.concat(verifies.docs.map((doc) => doc.data().userId));
             }
             if (!users.includes(userId)) {
                 taskId = curTaskId;
+                newTask = true;
                 break;
             }
         }
     }
 
-    if (taskId != null) { // TODO: get aggregation etc.
+    if (taskId != null) { // Assign the task
         admin.firestore().collection('tasks').doc(taskId).get().then(async function (doc) {
             let verify = {
                 explanation: "",
                 fair: false,
-                fix: [],
                 taskId: taskId,
                 userId: userId,
                 status: 0
             }
-            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify);
-            var task = await admin.firestore().collection('tasks').doc(taskId).get();
+            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify);\
+            // TODO: Get the aggregate
+            var task = await admin.firestore().collection('tasks').doc(taskId).get(); // TODO: Replace by an aggregate
             res.send(JSON.stringify(task.data()));
         });
+        if (newTask) {
+            admin.firestore().collection('users').doc(userId).update({verifies_done: increment});
+        }
     } else { // No task could be found
         res.send("No task found!");
     }
