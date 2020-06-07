@@ -16,6 +16,7 @@
     dense
     >
       <v-list-item 
+      class="add_border"
       :draggable="draggable" 
       v-for="(song, index) in songs" 
       :id="song.id" 
@@ -63,3 +64,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.add_border{
+  border-style: dotted;
+  border-color: gray;
+  border-width: 0.5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 2px;
+}
+</style>
