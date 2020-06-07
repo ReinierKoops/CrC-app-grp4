@@ -29,6 +29,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
     var fixes = await admin.firestore().collection('fixes').where("userId", "==", userId).where("status", "==", 0).get();
     if (!fixes.empty) { // Check if task is open for user
         taskId = fixes.docs[0].data().taskId;
+        admin.firestore().collection('fixes').doc(taskId + '-' + userId).update({nr_visits: increment});
     } else if (userFixes < fixLimit) { // Check if user limit is not reached
         var tasks = await admin.firestore().collection('tasks').where("status", "==", 0).get();
         var doc;
@@ -59,11 +60,12 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
                 userId: userId,
                 status: 0
             }
-            admin.firestore().collection('fixes').doc(taskId + '-' + userId).set(fix);
+            admin.firestore().collection('fixes').doc(taskId + '-' + userId).set(fix, { merge: true });
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
             res.send(JSON.stringify(task.data()));
         });
         if (newTask) {
+            admin.firestore().collection('fixes').doc(taskId + '-' + userId).set({nr_visits: 1}, { merge: true });
             admin.firestore().collection('users').doc(userId).update({fixes_done: increment});
         }
     } else { // No task could be found
@@ -86,6 +88,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
     var verifies = await admin.firestore().collection('verifies').where("userId", "==", userId).where("status", "==", 0).get();
     if (!verifies.empty) { // Check if task is open for user
         taskId = verifies.docs[0].data().taskId;
+        admin.firestore().collection('verifies').doc(taskId + '-' + userId).update({nr_visits: increment});
     } else if (userVerifies < verifyLimit) { // Check if user limit is not reached
         var tasks = await admin.firestore().collection('tasks').where("status", "==", 1).get();
         var doc;
@@ -119,7 +122,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
                 userId: userId,
                 status: 0
             }
-            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify);
+            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify, { merge: true });
             
             var aggregate = await admin.firestore().collection('aggregates').doc(taskId).get();
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
@@ -136,6 +139,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             res.send(JSON.stringify(newTask));
         });
         if (newTask) {
+            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set({nr_visits: 1}, { merge: true });
             admin.firestore().collection('users').doc(userId).update({verifies_done: increment});
         }
     } else { // No task could be found
