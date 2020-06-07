@@ -77,7 +77,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
             admin.firestore().collection('fixes').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
         }
     } else { // No task could be found
-        res.send("No task found!");
+        res.status(400).send("No task found!");
     }
 });
 
@@ -168,7 +168,8 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             }
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify, { merge: true });
             
-            var aggregate = await admin.firestore().collection('aggregates').doc(taskId).get();
+            var aggregate = await admin.firestore().collection('aggregate').doc(taskId).get();
+            aggregate = aggregate.data();
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
             task = task.data();
 
@@ -188,7 +189,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             admin.firestore().collection('users').doc(userId).update({verifies_done: increment});
         }
     } else { // No task could be found
-        res.send("No task found!");
+        res.status(400).send("No task found!");
     }
 });
 
@@ -300,9 +301,9 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     var consensus_songs = [];
 
                     sorted_count_song.forEach(function(song_and_count) {
-                        if (song_and_count >= 3) {
+                        if (song_and_count[1] >= 3) {
                             consensus_songs.push(song_and_count[0]);
-                        } 
+                        }
                     });
 
                     // If the list is smaller than 5 songs then no concensus.
