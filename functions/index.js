@@ -298,6 +298,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 }
             }
         }
+        }
     }
 });
 
