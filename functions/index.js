@@ -65,7 +65,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
             res.send(JSON.stringify(task.data()));
         });
         if (newTask) {
-            admin.firestore().collection('fixes').doc(taskId + '-' + userId).set({nr_visits: 1}, { merge: true });
+            admin.firestore().collection('fixes').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
             admin.firestore().collection('users').doc(userId).update({fixes_done: increment});
         }
     } else { // No task could be found
@@ -139,12 +139,25 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             res.send(JSON.stringify(newTask));
         });
         if (newTask) {
-            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set({nr_visits: 1}, { merge: true });
+            admin.firestore().collection('verifies').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
             admin.firestore().collection('users').doc(userId).update({verifies_done: increment});
         }
     } else { // No task could be found
         res.send("No task found!");
     }
+});
+
+exports.incrementTime = functions.https.onRequest(function (req, res) {
+    res.set('Access-Control-Allow-Origin', "*");
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+
+    data = JSON.parse(req.body);
+
+    admin.firestore().collection(data.type).doc(data.taskId + '-' + data.userId).update({
+        time_spent: admin.firestore.FieldValue.increment(data.time)
+    });
+
+    res.status(200).send('');
 });
 
 exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (change, context) => {

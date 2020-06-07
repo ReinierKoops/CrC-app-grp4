@@ -79,7 +79,8 @@ export default {
             originalList: [],
             dialog: false,
             errorText: "This is an error!",
-            show: false
+            show: false,
+            time: 0
         }
     },
     methods: {
@@ -121,56 +122,76 @@ export default {
             } else {
                 this.show = true;
             }
-        }
-    },
-    created() {
-        let vm = this
-        document.addEventListener('dragStarted', function(event) {
-            vm.recommendationSwap = null;
-            vm.preferenceSwap = null;
+        },
+        startDrag() {
+            this.recommendationSwap = null;
+            this.preferenceSwap = null;
 
             if (event.detail.source == "recommendation") {
-                vm.recommendationSwap = event.detail.id;
+                this.recommendationSwap = event.detail.id;
             } else {
-                vm.preferenceSwap = event.detail.id;
+                this.preferenceSwap = event.detail.id;
             }
-        });
-        document.addEventListener('dragDropped', function(event) {
-            let recommendations = vm.task.algorithm.map((song) => song.id);
+        },
+        dropDrag() {
+            let recommendations;
+            if (this.task.algorithm != undefined) {
+                recommendations = this.task.algorithm.map((song) => song.id);
+            }
             if (event.detail.source == "recommendation") {
-                if (vm.recommendationSwap != null) {
-                    //Sort the recommendation list
-                    let oldIndex = recommendations.indexOf(vm.recommendationSwap);
-                    let newIndex = recommendations.indexOf(event.detail.id);
-                    
-                    const deleted = vm.task.algorithm.splice(oldIndex, 1);
-                    vm.task.algorithm.splice(newIndex, 0, deleted[0]);
-                } else {
-                    vm.recommendationSwap = event.detail.id;
-                }
+                //if (this.recommendationSwap != null) {
+                //    //Sort the recommendation list
+                //    let oldIndex = recommendations.indexOf(this.recommendationSwap);
+                //    let newIndex = recommendations.indexOf(event.detail.id);
+                //    
+                //    const deleted = this.task.algorithm.splice(oldIndex, 1);
+                //    this.task.algorithm.splice(newIndex, 0, deleted[0]);
+                //} else {
+                //    this.recommendationSwap = event.detail.id;
+                //}
+                this.recommendationSwap = event.detail.id;
             } else {
-                vm.preferenceSwap = event.detail.id;
+                this.preferenceSwap = event.detail.id;
             }
 
-            if (vm.recommendationSwap != null && vm.preferenceSwap != null) {
+            if (this.recommendationSwap != null && this.preferenceSwap != null) {
 
                 // Check if song not already in list
-                if (recommendations.includes(vm.preferenceSwap)) {
-                    vm.errorText = "Song is already in the recommendations!"
-                    vm.displayAlert();
+                if (recommendations.includes(this.preferenceSwap)) {
+                    this.errorText = "Song is already in the recommendations!"
+                    this.displayAlert();
                 } else {
                     // Remove the old song from the recommendation
-                    let index = recommendations.indexOf(vm.recommendationSwap);
+                    let index = recommendations.indexOf(this.recommendationSwap);
                     let song;
-                    for (song of vm.task.song_list) {
-                        if (song.id == vm.preferenceSwap) {
+                    for (song of this.task.song_list) {
+                        if (song.id == this.preferenceSwap) {
                             break;
                         }
                     }
-                    vm.task.algorithm.splice(index, 1, song);
+                    this.task.algorithm.splice(index, 1, song);
                 }
             }
-        });
+        },
+        unload() {
+            if (this.time != 0) {
+                var data = JSON.stringify({
+                    userId: firebase.auth().currentUser.uid,
+                    taskId: this.task.taskId,
+                    type: 'fixes',
+                    time: Math.round((new Date() - this.time) / 1000)
+                });
+                navigator.sendBeacon('https://us-central1-crc-party-grp4.cloudfunctions.net/incrementTime', data);
+            }            
+
+            window.removeEventListener('beforeunload', this.unload);
+        }
+    },
+    created() {
+        this.time = new Date();
+        document.addEventListener('dragStarted', this.startDrag);
+        document.addEventListener('dragDropped', this.dropDrag);
+        window.addEventListener('beforeunload', this.unload);
     },
     mounted() {
         let vm = this;
@@ -181,6 +202,7 @@ export default {
                 vm.originalList = [...vm.task.algorithm];
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
+                vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
             }
@@ -188,6 +210,9 @@ export default {
             // Return to home page
             this.dialog = true;
         });     
+    },
+    beforeDestroy() {
+        this.unload();
     }
 }
 </script>
