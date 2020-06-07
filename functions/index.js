@@ -151,7 +151,7 @@ exports.incrementTime = functions.https.onRequest(function (req, res) {
     res.set('Access-Control-Allow-Origin', "*");
     res.set('Access-Control-Allow-Methods', 'GET, POST');
 
-    data = JSON.parse(req.body);
+    var data = JSON.parse(req.body);
 
     admin.firestore().collection(data.type).doc(data.taskId + '-' + data.userId).update({
         time_spent: admin.firestore.FieldValue.increment(data.time)
@@ -247,7 +247,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     // Create the aggregate
 
                     // use "fixes_jsons", "concencus_songs", "song_with_users" to create verifies
-                    // append explanations of first three users found for the last song
+                    // append explanations of users found for the last song
                     // found in concencus_songs
 
                     return;
@@ -343,7 +343,7 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
                     // Create the aggregate
 
                     // use "verifies_jsons", "concencus_songs", "song_with_users" to create verifies
-                    // append explanations of first three users found for the last song
+                    // append explanations of users found for the last song
                     // found in concencus_songs
 
                     return;
