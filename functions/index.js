@@ -217,7 +217,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 admin.firestore().collection('users').doc(newValue.userId).set({honey_status_fix: -1}, {merge: true});
             }
         } else {
-            var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).get();
+            var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).where("status", "==", 1).get();
             var algo_list = await admin.firestore().collection('tasks').doc(newValue.taskId).get();
             algo_list = algo_list.data();
             var allStatus = fixes.docs.map((doc) => doc.data().status);
@@ -225,7 +225,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 return a + b;
             }, 0);
 
-            if (sum >= fixesRequired) {
+            if (sum == fixesRequired) {
                 admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
                 // fair count
@@ -331,18 +331,6 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
 exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(async (change, context) => {
     const newValue = change.after.data();
     if (newValue != null && newValue.status == 1) {
-<<<<<<< HEAD
-        var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
-        var allStatus = verifies.docs.map((doc) => doc.data().status);
-        var sum = allStatus.reduce(function (a, b) {
-            return a + b;
-        }, 0);
-
-        if (sum >= verifiesRequired) {
-            admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
-            
-            return;
-=======
         if (newValue.taskId == "honeyverify") {
             // The worker must say the new list is fair
             let fair = newValue.fair;
@@ -353,13 +341,13 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
             }
         } else {
             
-	        var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
+	        var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).where("status", "==", 1).get()
 	        var allStatus = verifies.docs.map((doc) => doc.data().status);
 	        var sum = allStatus.reduce(function (a, b) {
 	            return a + b;
 	        }, 0);
 
-	        if (sum >= verifiesRequired) {
+	        if (sum == verifiesRequired) {
 	            admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
 	            
 	            // fair count
@@ -443,7 +431,6 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
                     }
                 }
             }
->>>>>>> fd515de766220c41dd713d03546c5aa52c9a204d
         }
     }
 });
