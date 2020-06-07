@@ -300,9 +300,9 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     var consensus_songs = [];
 
                     sorted_count_song.forEach(function(song_and_count) {
-                        if (song_and_count >= 3) {
+                        if (song_and_count[1] >= 3) {
                             consensus_songs.push(song_and_count[0]);
-                        } 
+                        }
                     });
 
                     // If the list is smaller than 5 songs then no concensus.
