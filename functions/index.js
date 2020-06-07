@@ -237,28 +237,25 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 var fixes_jsons = []
                 
                 // Fill the dicts with data
-                fixes.then(snapshot => {
-                    snapshot.forEach(doc => {
-                        // plus casts fair: true = 1, false = 0
-                        fair_count = fair_count + +(doc.data().fair)
-                        
-                        // Append JSON
-                        fixes_jsons.push(doc.data());
-
-                        // Iterate over all the song in the list
-                        for (let song in doc.data().fix) {
-                            // Unique song in the list
-                            if (!(song["id"] in song_list_count)) {
-                                song_list_count[song["id"]] = 1;
-                                song_with_users[song["id"]] = [doc.data().userId];
-                            } else {
-                                // Not unique song
-                                song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-                                song_with_users[song["id"]].push(doc.data().userId);
-                            }
+                fixes.forEach(doc => {
+                    // plus casts fair: true = 1, false = 0
+                    fair_count = fair_count + +(doc.data().fair)
+                    
+                    // Append JSON
+                    fixes_jsons.push(doc.data());
+                    // Iterate over all the song in the list
+                    for (let song in doc.data().fix) {
+                        // Unique song in the list
+                        if (!(song["id"] in song_list_count)) {
+                            song_list_count[song["id"]] = 1;
+                            song_with_users[song["id"]] = [doc.data().userId];
+                        } else {
+                            // Not unique song
+                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+                            song_with_users[song["id"]].push(doc.data().userId);
                         }
-                    });
-                })
+                    }
+                });
                 
                 // If fair >= 3 -> put in results
                 if (fair_count >= 3) {
@@ -359,29 +356,25 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
 	            var verifies_jsons = {}
 	            
 	            // Fill the dicts with data
-	            verifies.then(snapshot => {
-	                snapshot.forEach(doc => {
-	                    // plus casts fair: true = 1, false = 0
-	                    count = count + +(doc.data().fair)
-	                    
-	                    // Append JSON
-	                    verifies_jsons[doc.data().userId] = doc.data();
-
-	                    // Iterate over all the song in the list
-	                    for (let song in doc.data().fix) {
-	                        // Unique song in the list
-	                        if (!(song["id"] in song_list_count)) {
-	                            song_list_count[song["id"]] = 1;
-	                            song_with_users[song["id"]] = [doc.data().userId];
-	                        } else {
-	                            // Not unique song
-	                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-	                            song_with_users[song["id"]].push(doc.data().userId);
-	                        }
+	            verifies.forEach(doc => {
+	                // plus casts fair: true = 1, false = 0
+	                count = count + +(doc.data().fair)
+	                
+	                // Append JSON
+	                verifies_jsons[doc.data().userId] = doc.data();
+	                // Iterate over all the song in the list
+	                for (let song in doc.data().fix) {
+	                    // Unique song in the list
+	                    if (!(song["id"] in song_list_count)) {
+	                        song_list_count[song["id"]] = 1;
+	                        song_with_users[song["id"]] = [doc.data().userId];
+	                    } else {
+	                        // Not unique song
+	                        song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+	                        song_with_users[song["id"]].push(doc.data().userId);
 	                    }
-
-	                });
-	            })
+	                }
+	            });
 	            
 	            if (count >= 3) {
 	                // If fair >= 3 -> put in results
