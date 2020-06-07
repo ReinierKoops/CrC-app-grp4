@@ -20,7 +20,7 @@
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation draggable="true" :songs="task.algorithm"/>
+                    <recommendation name="Recommendation" draggable="true" :songs="task.algorithm"/>
                 </v-col>
                 <v-col>
                     <v-row>
@@ -182,15 +182,22 @@ export default {
                     time: Math.round((new Date() - this.time) / 1000)
                 });
                 navigator.sendBeacon('https://us-central1-crc-party-grp4.cloudfunctions.net/incrementTime', data);
-            }            
+            }
 
+            document.removeEventListener('dragStarted', this.startDrag);
+            document.removeEventListener('dragDropped', this.dropDrag);
+            document.removeEventListener('resetList', this.resetList);
             window.removeEventListener('beforeunload', this.unload);
+        },
+        resetList() {
+            this.task.algorithm = [...this.originalList];
         }
     },
     created() {
         this.time = new Date();
         document.addEventListener('dragStarted', this.startDrag);
         document.addEventListener('dragDropped', this.dropDrag);
+        document.addEventListener('resetList', this.resetList);
         window.addEventListener('beforeunload', this.unload);
     },
     mounted() {
@@ -202,7 +209,6 @@ export default {
                 vm.originalList = [...vm.task.algorithm];
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
-                vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
             }
