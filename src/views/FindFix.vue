@@ -184,13 +184,20 @@ export default {
                 navigator.sendBeacon('https://us-central1-crc-party-grp4.cloudfunctions.net/incrementTime', data);
             }
 
+            document.removeEventListener('dragStarted', this.startDrag);
+            document.removeEventListener('dragDropped', this.dropDrag);
+            document.removeEventListener('resetList', this.resetList);
             window.removeEventListener('beforeunload', this.unload);
+        },
+        resetList() {
+            this.task.algorithm = [...this.originalList];
         }
     },
     created() {
         this.time = new Date();
         document.addEventListener('dragStarted', this.startDrag);
         document.addEventListener('dragDropped', this.dropDrag);
+        document.addEventListener('resetList', this.resetList);
         window.addEventListener('beforeunload', this.unload);
     },
     mounted() {
