@@ -149,6 +149,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
 
 exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (change, context) => {
     const newValue = change.after.data();
+
     if (newValue != null && newValue.status == 1) {
         var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).get();
         var allStatus = fixes.docs.map((doc) => doc.data().status);
@@ -159,7 +160,57 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
         if (sum >= fixesRequired) {
             admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
-            // TODO: Create aggregation and write to db
+            var count = 0;
+            // dict with just song count
+            var song_list_count = {}
+            // dict with users-set
+            var song_users = {}
+            
+            fixes.then(snapshot => {
+                snapshot.forEach(doc => {
+                    // plus casts fair: true = 1, false = 0
+                    count = count + +(doc.data().fair)
+
+                    if (count >= 3) {
+                        // If fair >= 3 -> put in results
+                        // TODO add it results table
+                        return;
+                    } else {
+                        // If fair < 3 -> put in verify
+                        // Iterate over all the song in the list
+                        for (let song in doc.data().fix) {
+                            // Unique song in the list
+                            if (!(song["id"] in song_list_count)) {
+                                song_list_count[song["id"]] = 1;
+                                song_users[song["id"]] = [doc.data().userId];
+                            } else {
+                                // Not unique song
+                                song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+                                song_users[song["id"]].push(doc.data().userId);
+                            }
+                        }
+                    }
+                });
+            }).catch(err => {
+                console.log('Error getting documents', err);
+            });
+            // Its deemed not fair.
+            // Create items array
+            var items = Object.keys(song_list_count).map(function(key) {
+                return [key, song_list_count[key]];
+            });
+            // Sort the array based on the count
+            items.sort(function(first, second) {
+                return second[1] - first[1];
+            });
+            // Now append only songs with count of three or more
+
+            // If the list is smaller than 5 songs then no concensus: Its deemed fair
+            // Thus rerouted to results
+
+            // Else append the reasoning of the first three users of last added song
+            // Create the aggregate
+
         }
     }
 });
