@@ -37,7 +37,6 @@
     <v-card-actions>
       <v-btn 
             tile 
-            :to="{ name: 'Verify' }"
             :block="true"
             color="#2296F3"
             class="white--text"
