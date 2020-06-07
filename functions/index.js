@@ -141,7 +141,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
             task = task.data();
 
-            let newTask = {
+            let userTask = {
                 taskId: task.taskId,
                 userId: userId,
                 algorithm: task.algorithm,
@@ -150,7 +150,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
                 preferences: [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]
             }
 
-            res.send(JSON.stringify(newTask));
+            res.send(JSON.stringify(userTask));
 
             if (newTask) {
                 admin.firestore().collection('verifies').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
@@ -171,7 +171,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             var aggregate = await admin.firestore().collection('aggregates').doc(taskId).get();
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
 
-            var newTask = {
+            let userTask = {
                 taskId: task.taskId,
                 userId: userId,
                 algorithm: task.algorithm,
@@ -180,7 +180,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
                 preferences: [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]
             }
 
-            res.send(JSON.stringify(newTask));
+            res.send(JSON.stringify(userTask));
         });
         if (newTask) {
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
@@ -313,7 +313,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
 exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(async (change, context) => {
     const newValue = change.after.data();
     if (newValue != null && newValue.status == 1) {
-        if (newValue.taskId == "honeyfix") {
+        if (newValue.taskId == "honeyverify") {
             // The worker must say the new list is fair
             let fair = newValue.fair;
             if (fair) {
