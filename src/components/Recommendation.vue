@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Recommendations</h3>  
+    <h3>{{ name }}</h3>  
     <v-list>
       <v-list-item :draggable="draggable" v-for="song in songs" :id="song.id" :key="song.title" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
         <v-list-item-content><v-list-item-title v-text="song.artist + ' - ' + song.title"/></v-list-item-content>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  props: ["songs", "draggable"],
+  props: ["songs", "draggable", "name"],
   methods: {
     dragStart: function(ev) {
       let closest = ev.target.closest("div.v-list-item");

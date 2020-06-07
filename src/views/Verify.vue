@@ -20,12 +20,12 @@
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation :songs="task.fix"></recommendation>
-                    <recommendation :songs="task.algorithm"></recommendation>   
+                    <recommendation name="Recommendation Fixed" :songs="task.fix"></recommendation>
+                    <recommendation name="Old Recommendation" :songs="task.algorithm"></recommendation>   
                 </v-col>
                 <v-col>
                     <v-row>
-                        <v-col v-for="(prefs, index) in users" :key="index">
+                        <v-col v-for="(prefs, index) in task.preferences" :key="index">
                             <preference-list :songs="prefs" :name="'User ' + (index + 1)"></preference-list>
                         </v-col>
                     </v-row>
@@ -95,7 +95,7 @@ export default {
             let userId = firebase.auth().currentUser.uid;
             let fair = document.querySelector('input[name="fair"]:checked');
             if (fair == null) {
-                this.errorText = "Please select whether the list is fair!";
+                this.errorText = "Please make a selection on whether the list is fair!";
                 this.displayAlert();
             } else {
                 fair = fair.value;
