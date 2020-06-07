@@ -118,7 +118,7 @@
                                 color="#2296F3"
                                 class="white--text"
                                 v-on:click="clickSubmit">
-                                Submit
+                                <v-icon>mdi-send</v-icon>Submit
                             </v-btn>
                         </v-card-text>
 
