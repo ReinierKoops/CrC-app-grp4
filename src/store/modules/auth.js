@@ -10,6 +10,7 @@ const state = {
     feedback: null,
     fixes_done: null,
     verifies_done: null,
+    honey_status: null,
 }
 
 const getters = {
@@ -18,7 +19,8 @@ const getters = {
     getFeedback: state => state.feedback,
     getEmail: state => state.email,
     getFixesDone: state => state.fixes_done,
-    getVerifiesDone: state => state.verifies_done
+    getVerifiesDone: state => state.verifies_done,
+    getHoneyStatus: state => state.honey_status
 }
 
 const actions = {
@@ -34,7 +36,8 @@ const actions = {
             user_id: user.uid,
             timestamp: Date.now(),
             fixes_done: 0,
-            verifies_done: 0
+            verifies_done: 0,
+            honey_status: 0
         })
         // set state of user
         await commit('setUser', payload);
@@ -62,7 +65,8 @@ const actions = {
                             'user_id': doc.data().user_id,
                             'email': doc.data().email,
                             'fixes_done': doc.data().fixes_done,
-                            'verifies_done': doc.data().verifies_done
+                            'verifies_done': doc.data().verifies_done,
+                            'honey_status' : doc.data().honey_status
                     })
                     });
                 })
@@ -93,7 +97,9 @@ const actions = {
             state.feedback = err.message
         });
         // empty state of user
-        await commit('setUser', { 'username': '', 'user_id': '', 'email': '' , 'fixes_done': '', 'verifies_done': ''});
+        await commit('setUser', { 'username': '', 'user_id': '', 
+        'email': '' , 'fixes_done': '', 
+        'verifies_done': '', 'honey_status': ''});
     }
 }
 
@@ -104,6 +110,7 @@ const mutations = {
         state.email = payload.email;
         state.fixes_done = payload.fixes_done;
         state.verifies_done = payload.verifies_done;
+        state.honey_status = payload.honey_status;
     }
 }
 
