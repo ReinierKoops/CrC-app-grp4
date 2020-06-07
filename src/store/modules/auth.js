@@ -39,7 +39,8 @@ const actions = {
             timestamp: Date.now(),
             fixes_done: 0,
             verifies_done: 0,
-            honey_status: 0
+            honey_status_fix: 0,
+            honey_status_verify: 0
         })
         // set state of user
         await commit('setUser', payload);
