@@ -173,57 +173,69 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
         if (sum >= fixesRequired) {
             admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
+            // fair count
             var count = 0;
             // dict with just song count
             var song_list_count = {}
             // dict with users-set
             var song_users = {}
             
+            // Fill the dicts with data
             fixes.then(snapshot => {
                 snapshot.forEach(doc => {
                     // plus casts fair: true = 1, false = 0
                     count = count + +(doc.data().fair)
 
-                    if (count >= 3) {
-                        // If fair >= 3 -> put in results
-                        // TODO add it results table
-                        return;
-                    } else {
-                        // If fair < 3 -> put in verify
-                        // Iterate over all the song in the list
-                        for (let song in doc.data().fix) {
-                            // Unique song in the list
-                            if (!(song["id"] in song_list_count)) {
-                                song_list_count[song["id"]] = 1;
-                                song_users[song["id"]] = [doc.data().userId];
-                            } else {
-                                // Not unique song
-                                song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-                                song_users[song["id"]].push(doc.data().userId);
-                            }
+                    // Iterate over all the song in the list
+                    for (let song in doc.data().fix) {
+                        // Unique song in the list
+                        if (!(song["id"] in song_list_count)) {
+                            song_list_count[song["id"]] = 1;
+                            song_users[song["id"]] = [doc.data().userId];
+                        } else {
+                            // Not unique song
+                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+                            song_users[song["id"]].push(doc.data().userId);
                         }
                     }
+
                 });
-            }).catch(err => {
-                console.log('Error getting documents', err);
-            });
-            // Its deemed not fair.
-            // Create items array
-            var items = Object.keys(song_list_count).map(function(key) {
-                return [key, song_list_count[key]];
-            });
-            // Sort the array based on the count
-            items.sort(function(first, second) {
-                return second[1] - first[1];
-            });
-            // Now append only songs with count of three or more
+            })
+            
+            if (count >= 3) {
+                // If fair >= 3 -> put in results
+                // TODO add it results table
+                return;
+            } else {
+                // Its deemed not fair, check if there is concensus.
+                // Create sorted songs based on count array
+                var sorted_count_song = Object.keys(song_list_count).map(function(key) {
+                    return [key, song_list_count[key]];
+                });
+                // Sort the array based on the count
+                sorted_count_song.sort(function(first, second) {
+                    return second[1] - first[1];
+                });
+                // Now append only songs with count of three or more
+                var concencus_songs = [];
 
-            // If the list is smaller than 5 songs then no concensus: Its deemed fair
-            // Thus rerouted to results
+                sorted_count_song.forEach(async function(song_and_count) {
+                    if (song_and_count >= 3) {
+                        concencus_songs.push(song_and_count);
+                    } 
+                });
 
-            // Else append the reasoning of the first three users of last added song
-            // Create the aggregate
-
+                // If the list is smaller than 5 songs then no concensus: Its deemed fair
+                // Thus rerouted to results
+                if (concencus_songs.length < 5) {
+                    // TODO add it results table
+                    return;
+                } else {
+                    // Else append the reasoning of the first three users of last added song
+                    // Create the aggregate
+                    return;
+                }
+            }
         }
     }
 });
