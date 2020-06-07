@@ -20,7 +20,7 @@
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation draggable="true" :songs="task.algorithm"/>
+                    <recommendation name="Recommendation" draggable="true" :songs="task.algorithm"/>
                 </v-col>
                 <v-col>
                     <v-row>

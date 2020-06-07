@@ -71,8 +71,10 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
             res.send(JSON.stringify(task.data()));
         });
         if (newTask) {
+            if (taskId != "honeyfix") {
+                admin.firestore().collection('users').doc(userId).update({fixes_done: increment});
+            }
             admin.firestore().collection('fixes').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
-            admin.firestore().collection('users').doc(userId).update({fixes_done: increment});
         }
     } else { // No task could be found
         res.send("No task found!");
@@ -137,6 +139,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify, { merge: true });
 
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
+            task = task.data();
 
             let newTask = {
                 taskId: task.taskId,
@@ -148,6 +151,10 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             }
 
             res.send(JSON.stringify(newTask));
+
+            if (newTask) {
+                admin.firestore().collection('verifies').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
+            }
         })
     } else if (taskId != null) { // Assign the task
         admin.firestore().collection('tasks').doc(taskId).get().then(async function (doc) {
@@ -156,7 +163,8 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
                 fair: false,
                 taskId: taskId,
                 userId: userId,
-                status: 0
+                status: 0,
+                time: 0
             }
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify, { merge: true });
             
