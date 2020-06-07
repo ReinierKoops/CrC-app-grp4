@@ -377,6 +377,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
 
 exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(async (change, context) => {
     const newValue = change.after.data();
+
     if (newValue != null && newValue.status == 1) {
         if (newValue.taskId == "honeyverify") {
             // The worker must say the new list is fair
@@ -388,6 +389,8 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
             }
         } else {
             var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
+            var algo_list = await admin.firestore().collection('tasks').doc(newValue.taskId).get();
+            algo_list = algo_list.data();
             var allStatus = verifies.docs.map((doc) => doc.data().status);
             var sum = allStatus.reduce(function (a, b) {
                 return a + b;
@@ -395,8 +398,54 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
 
             if (sum >= verifiesRequired) {
                 admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
+
+                // fair count
+                var fair_count = 0;
+                // All fixes as json before merged.
+                var verifies_jsons = []
                 
-                return;
+                // Fill the dicts with data
+                verifies.forEach(doc => {
+                    // plus casts fair: true = 1, false = 0
+                    fair_count = fair_count + +(doc.data().fair)
+                    
+                    // Append JSON
+                    verifies_jsons.push(doc.data());
+                });
+
+                let json_object = new Object();
+                json_object['taskId'] = algo_list.taskId;
+                json_object['algorithm'] = algo_list.algorithm;
+                json_object['algorithm_explain_user'] = algo_list.user_gen_expl;
+                json_object['user_verify'] = algo_list.user_gen_fix;
+                
+                if (fair_count >= 3) {
+                    // Gather the "fair" explanations
+                    let fair_expl = {}
+                    verifies_jsons.forEach(function (item) {
+                        if (item.fair) {
+                            fair_expl[item.userId] = item.explanation
+                        }
+                    });
+                    json_object['user_verify_explain'] = fair_expl;
+                    json_object['fair'] = true;
+                } else {
+                    // Gather the "unfair" explanations
+                    let fair_expl = {}
+                    verifies_jsons.forEach(function (item) {
+                        if (!(item.fair)) {
+                            fair_expl[item.userId] = item.explanation
+                        }
+                    });
+                    json_object['user_verify_explain'] = fair_expl;
+                    json_object['fair'] = false;
+                }
+
+                // Adds it to the aggregate table
+                return await admin.firestore()
+                .collection('results')
+                .doc(verifies_jsons[0].taskId)
+                .set(json_object);
             }
         }
     }
