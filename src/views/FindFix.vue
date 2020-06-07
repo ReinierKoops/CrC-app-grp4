@@ -174,7 +174,7 @@ export default {
             }
         },
         unload() {
-            if (this.time != 0) {
+            if (this.task.taskId != "") {
                 var data = JSON.stringify({
                     userId: firebase.auth().currentUser.uid,
                     taskId: this.task.taskId,
