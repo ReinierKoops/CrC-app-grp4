@@ -10,7 +10,8 @@ const state = {
     feedback: null,
     fixes_done: null,
     verifies_done: null,
-    honey_status: null,
+    honey_status_fix: null,
+    honey_status_verify: null
 }
 
 const getters = {
@@ -20,7 +21,8 @@ const getters = {
     getEmail: state => state.email,
     getFixesDone: state => state.fixes_done,
     getVerifiesDone: state => state.verifies_done,
-    getHoneyStatus: state => state.honey_status
+    getHoneyStatusFix: state => state.honey_status_fix,
+    getHoneyStatusVerify: state => state.honey_status_verify
 }
 
 const actions = {
@@ -66,7 +68,8 @@ const actions = {
                             'email': doc.data().email,
                             'fixes_done': doc.data().fixes_done,
                             'verifies_done': doc.data().verifies_done,
-                            'honey_status' : doc.data().honey_status
+                            'honey_status_fix' : doc.data().honey_status_fix,
+                            'honey_status_verify' : doc.data().honey_status_verify
                     })
                     });
                 })
@@ -99,7 +102,8 @@ const actions = {
         // empty state of user
         await commit('setUser', { 'username': '', 'user_id': '', 
         'email': '' , 'fixes_done': '', 
-        'verifies_done': '', 'honey_status': ''});
+        'verifies_done': '', 'honey_status_fix': '',
+        'honey_status_verify': ''});
     }
 }
 
@@ -110,7 +114,8 @@ const mutations = {
         state.email = payload.email;
         state.fixes_done = payload.fixes_done;
         state.verifies_done = payload.verifies_done;
-        state.honey_status = payload.honey_status;
+        state.honey_status_fix = payload.honey_status_fix,
+        state.honey_status_verify = payload.honey_status_verify
     }
 }
 
