@@ -217,7 +217,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 admin.firestore().collection('users').doc(newValue.userId).set({honey_status_fix: -1}, {merge: true});
             }
         } else {
-            var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).get();
+            var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).where("status", "==", 1).get();
             var algo_list = await admin.firestore().collection('tasks').doc(newValue.taskId).get();
             algo_list = algo_list.data();
             var allStatus = fixes.docs.map((doc) => doc.data().status);
@@ -225,7 +225,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 return a + b;
             }, 0);
 
-            if (sum >= fixesRequired) {
+            if (sum == fixesRequired) {
                 admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
                 // fair count
@@ -240,29 +240,27 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 var fixes_jsons = []
                 
                 // Fill the dicts with data
-                fixes.then(snapshot => {
-                    snapshot.forEach(doc => {
-                        // plus casts fair: true = 1, false = 0
-                        fair_count = fair_count + +(doc.data().fair)
-                        
-                        // Append JSON
-                        fixes_jsons.push(doc.data());
+                fixes.forEach(doc => {
+                    // plus casts fair: true = 1, false = 0
+                    fair_count = fair_count + +(doc.data().fair)
+                    
+                    // Append JSON
+                    fixes_jsons.push(doc.data());
 
-                        // Iterate over all the song in the list
-                        doc.data().fix.forEach(function (song) {
-                            // Unique song in the list
-                            if (!(song["id"] in song_list_count)) {
-                                song_list_count[song["id"]] = 1;
-                                song_with_users[song["id"]] = [doc.data().userId];
-                                song_lookup[song["id"]] = song;
-                            } else {
-                                // Not unique song
-                                song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-                                song_with_users[song["id"]].push(doc.data().userId);
-                            }
-                        });
+                    // Iterate over all the song in the list
+                    doc.data().fix.forEach(function (song) {
+                        // Unique song in the list
+                        if (!(song["id"] in song_list_count)) {
+                            song_list_count[song["id"]] = 1;
+                            song_with_users[song["id"]] = [doc.data().userId];
+                            song_lookup[song["id"]] = song;
+                        } else {
+                            // Not unique song
+                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+                            song_with_users[song["id"]].push(doc.data().userId);
+                        }
                     });
-                })
+                });
                 
                 // If fair >= 3 -> put in results
                 if (fair_count >= 3) {
