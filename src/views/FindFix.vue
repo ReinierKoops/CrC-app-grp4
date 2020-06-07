@@ -182,7 +182,7 @@ export default {
                     time: Math.round((new Date() - this.time) / 1000)
                 });
                 navigator.sendBeacon('https://us-central1-crc-party-grp4.cloudfunctions.net/incrementTime', data);
-            }            
+            }
 
             window.removeEventListener('beforeunload', this.unload);
         }
