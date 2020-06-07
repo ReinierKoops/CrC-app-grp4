@@ -20,12 +20,12 @@
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation :songs="task.fix"></recommendation>
-                    <recommendation :songs="task.algorithm"></recommendation>   
+                    <recommendation name="Recommendation Fixed" :songs="task.fix"></recommendation>
+                    <recommendation name="Old Recommendation" :songs="task.algorithm"></recommendation>   
                 </v-col>
                 <v-col>
                     <v-row>
-                        <v-col v-for="(prefs, index) in users" :key="index">
+                        <v-col v-for="(prefs, index) in task.preferences" :key="index">
                             <preference-list :songs="prefs" :name="'User ' + (index + 1)"></preference-list>
                         </v-col>
                     </v-row>
@@ -33,8 +33,8 @@
                         <v-col>
                             <b>Are the <i>new</i> recommendations fair to you?</b>
                             <v-radio-group>
-                                <v-radio name="fair" label="Yes" value="true"/>
-                                <v-radio name="fair" label="No" value="false"/>
+                                <v-radio name="fair" label="Yes" :value="true"/>
+                                <v-radio name="fair" label="No" :value="false"/>
                             </v-radio-group>
                             <v-text-field id="rationale" label="Explanation" outlined/>
                             <transition name="fade">
@@ -95,10 +95,10 @@ export default {
             let userId = firebase.auth().currentUser.uid;
             let fair = document.querySelector('input[name="fair"]:checked');
             if (fair == null) {
-                this.errorText = "Please select whether the list is fair!";
+                this.errorText = "Please make a selection on whether the list is fair!";
                 this.displayAlert();
             } else {
-                fair = fair.value;
+                fair = JSON.parse(fair.value);
                 console.log(fair);
                 let explanation = document.getElementById('rationale').value;
                 if (explanation.length < 100) {
@@ -111,7 +111,7 @@ export default {
                         status: 1,
                         fair: fair,
                         explanation: explanation
-                    }).then(() => {
+                    }, {merge: true}).then(() => {
                         // Go to the home page
                         router.push({ name: 'Home' })
                     });
@@ -148,17 +148,21 @@ export default {
                 vm.task = res.data;
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
+                vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
             }
-        }).catch(err => {
+        }).catch(() => {
             // Return to home page
-            console.log(err);
             this.dialog = true;
         });
     },
     created() {
+        this.time = new Date();
         window.addEventListener('beforeunload', this.unload);
+    },
+    beforeDestroy() {
+        this.unload();
     }
 }
 </script>
