@@ -1,10 +1,24 @@
 <template>
   <div>
     <h3>{{ name }}</h3>
+
     <v-btn v-if="draggable" v-on:click="clickReset">Reset</v-btn>
+    
     <v-list>
-      <v-list-item :draggable="draggable" v-for="song in songs" :id="song.id" :key="song.title" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
-        <v-list-item-content><v-list-item-title v-text="song.artist + ' - ' + song.title"/></v-list-item-content>
+      <v-list-item 
+      :draggable="draggable" 
+      v-for="song in songs" 
+      :id="song.id" 
+      :key="song.title" 
+      v-on:dragstart="dragStart" 
+      v-on:dragenter="dragEnter" 
+      v-on:drop="dragDrop" 
+      v-on:dragover="dragOver">
+
+        <v-list-item-content>
+          <v-list-item-title v-text="song.artist + ' - ' + song.title"/>
+        </v-list-item-content>
+
       </v-list-item>
     </v-list>    
   </div>
