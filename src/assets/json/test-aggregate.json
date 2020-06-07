@@ -21,29 +21,20 @@
     "userId": "qc7qkBnDijbsXKp2UGoCKxFjkAK2"
 },
 
-{ "explanation": "Recomm fair.",
-    "fair": true,
-    "fix": 
-     [ { "artist": "Tones And I",
-         "id": "2grAr8pWMuLWn8ZYEE9wDV",
-         "title": "Never Seen the Rain" },
-       { "artist": "ROSALÍA",
-         "id": "4w47S36wQGBhGg073q3nt7",
-         "title": "TKN (feat. Travis Scott)" },
-       { "artist": "Black Eyed Peas",
-         "id": "14wf185UxfNbSy8dwt4r4q",
-         "title": "MAMACITA" },
-       { "artist": "Ariana Grande",
-         "id": "4HBZA5flZLE435QTztThqH",
-         "title": "Stuck with U (with Justin Bieber)" },
-       { "artist": "DaBaby",
-         "id": "7ytR5pFWmSjzHJIeQkgog4",
-         "title": "ROCKSTAR (feat. Roddy Ricch)" } ],
-    "status": 1,
-    "taskId": "cf40291b-0bf2-428a-8ffa-b15f67acca29",
-    "userId": "qc7qkBnDijbsXKp2UGoCKxFjkAK2"
-},
 
+{ "explanation": "Let say 1",
+    "fair": true,
+    "fix": 
+     [ { "artist": "Tones And I",
+         "id": "2grAr8pWMuLWn8ZYEE9wDV",
+         "title": "Never Seen the Rain" },
+       { "artist": "ROSALÍA",
+         "id": "4w47S36wQGBhGg073q3nt7",
+         "title": "TKN (feat. Travis Scott)" } ],
+    "status": 1,
+    "taskId": "cf40291b-0bf2-428a-8ffa-b15f67acca29",
+    "userId": "123"
+}
 { "explanation": "Recomm fair.",
     "fair": true,
     "fix": 
@@ -52,17 +43,26 @@
          "title": "Never Seen the Rain" },
        { "artist": "ROSALÍA",
          "id": "4w47S36wQGBhGg073q3nt7",
-         "title": "TKN (feat. Travis Scott)" },
-       { "artist": "Black Eyed Peas",
-         "id": "14wf185UxfNbSy8dwt4r4q",
-         "title": "MAMACITA" },
-       { "artist": "Ariana Grande",
-         "id": "4HBZA5flZLE435QTztThqH",
-         "title": "Stuck with U (with Justin Bieber)" },
-       { "artist": "DaBaby",
-         "id": "7ytR5pFWmSjzHJIeQkgog4",
-         "title": "ROCKSTAR (feat. Roddy Ricch)" } ],
+         "title": "TKN (feat. Travis Scott)" } ],
     "status": 1,
     "taskId": "cf40291b-0bf2-428a-8ffa-b15f67acca29",
-    "userId": "qc7qkBnDijbsXKp2UGoCKxFjkAK2"
+    "userId": "341"
 }
+
+{ "artist": "Name",
+    "id": "2g",
+    "title": "Great" }
+
+{ "abs": 1,
+"asd": 2,
+"rad": 4,
+"add": 2
+}
+
+var sorted_count_song = Object.keys(r).map(function(key) {
+    return [key, r[key]];
+});
+// Sort the array based on the count
+sorted_count_song.sort(function(first, second) {
+    return second[1] - first[1];
+});

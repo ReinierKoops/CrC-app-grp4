@@ -231,10 +231,13 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
 
                 // fair count
                 var fair_count = 0;
-                // dict with just song count
+                // dict with just song count (id => count)
                 var song_list_count = {}
-                // dict with users that chose the song
+                // dict with users that chose the song (id => userId)
                 var song_with_users = {}
+                // dict with all songs (id => info)
+                var song_lookup = {}
+                // All fixes as json before merged.
                 var fixes_jsons = []
                 
                 // Fill the dicts with data
@@ -244,30 +247,30 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     
                     // Append JSON
                     fixes_jsons.push(doc.data());
+
                     // Iterate over all the song in the list
-                    for (let song in doc.data().fix) {
+                    doc.data().fix.forEach(function (song) {
                         // Unique song in the list
                         if (!(song["id"] in song_list_count)) {
                             song_list_count[song["id"]] = 1;
                             song_with_users[song["id"]] = [doc.data().userId];
+                            song_lookup[song["id"]] = song;
                         } else {
                             // Not unique song
                             song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
                             song_with_users[song["id"]].push(doc.data().userId);
                         }
-                    }
+                    });
                 });
                 
                 // If fair >= 3 -> put in results
                 if (fair_count >= 3) {
-                    // use "fixes_jsons" to create results
-                    // append explanations of users found
-                    var json_object = new Object();
+                    let json_object = new Object();
                     json_object['taskId'] = fixes_jsons[0].taskId;
                     json_object['algorithm'] = algo_list.algorithm;
 
                     // Gather the "fair" explanations
-                    var fair_expl = {}
+                    let fair_expl = {}
                     fixes_jsons.forEach(function (item) {
                         if (item.fair) {
                             fair_expl[item.userId] = item.explanation
@@ -277,7 +280,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     json_object['algorithm_expl'] = fair_expl;
                     json_object['fair'] = true;
 
-                    // TODO add it results table
+                    // Adds it to the results table
                     return await admin.firestore()
                     .collection('results')
                     .doc(fixes_jsons[0].taskId)
@@ -285,8 +288,8 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 } else {
                     // Its deemed not fair, check if there is concensus.
                     // Create sorted songs based on count array
-                    var sorted_count_song = Object.keys(song_list_count).map(function(key) {
-                        return [key, song_list_count[key]];
+                    var sorted_count_song = Object.keys(song_list_count).map(function(song_id) {
+                        return [song_id, song_list_count[song_id]];
                     });
                     // Sort the array based on the count
                     sorted_count_song.sort(function(first, second) {
@@ -295,30 +298,68 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     // Now append only songs with count of three or more
                     var consensus_songs = [];
 
-                    sorted_count_song.forEach(async function(song_and_count) {
+                    sorted_count_song.forEach(function(song_and_count) {
                         if (song_and_count >= 3) {
-                            consensus_songs.push(song_and_count);
+                            consensus_songs.push(song_and_count[0]);
                         } 
                     });
 
-                    // If the list is smaller than 5 songs then no concensus: Its deemed fair
-                    // Thus rerouted to results
+                    // If the list is smaller than 5 songs then no concensus.
+                    // Its unchanged but not deemed fair thus rerouted to results.
                     if (consensus_songs.length < 5) {
-                        // TODO add it results table
+                        let json_object = new Object();
+                        json_object['taskId'] = fixes_jsons[0].taskId;
+                        json_object['algorithm'] = algo_list.algorithm;
 
-                        // use "fixes_jsons" to create results
-                        // append explanations of first three users found
+                        // Gather the "unfair" explanations
+                        let unfair_expl = {}
+                        fixes_jsons.forEach(function (item) {
+                            if (!(item.fair)) {
+                                unfair_expl[item.userId] = item.explanation
+                            }
+                        });
 
-                        return;
+                        json_object['algorithm_expl'] = unfair_expl;
+                        // Less than 3 people thought it was fair
+                        // But there was no consensus on the solution
+                        json_object['fair'] = false;
+
+                        // Adds it to the results table
+                        return await admin.firestore()
+                        .collection('results')
+                        .doc(fixes_jsons[0].taskId)
+                        .set(json_object);
                     } else {
-                        // Else append the reasoning of the users of last added song
-                        // Create the aggregate
+                        // It is unfair, there is concensus how to change
+                        // is put into verify.
+                        let json_object = new Object();
+                        json_object['taskId'] = fixes_jsons[0].taskId;
+                        json_object['algorithm'] = algo_list.algorithm;
 
-                        // use "fixes_jsons", "concencus_songs", "song_with_users" to create verifies
-                        // append explanations of users found for the last song
-                        // found in concencus_songs
+                        // create consensus list
+                        let user_gen_fix = [];
+                        let top_five_songs = consensus_songs.slice(0, 5);
 
-                        return;
+                        top_five_songs.forEach(function(song_id) {
+                            user_gen_fix.push(song_lookup[song_id]);
+                        });
+                        json_object['user_gen_fix'] = user_gen_fix;
+
+                        let last_song = top_five_songs[top_five_songs.length - 1];
+                        let user_gen_expl = [];
+
+                        fixes_jsons.forEach(function(fix_json) {
+                            if (song_with_users[last_song].includes(fix_json["userId"])) {
+                                user_gen_expl.push(fix_json["explanation"]);
+                            }
+                        });
+                        json_object['user_gen_expl'] = user_gen_expl;
+
+                        // Adds it to the results table
+                        return await admin.firestore()
+                        .collection('aggregate')
+                        .doc(fixes_jsons[0].taskId)
+                        .set(json_object);
                     }
                 }
             }
@@ -338,92 +379,16 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
                 admin.firestore().collection('users').doc(newValue.userId).set({honey_status_verify: -1}, {merge: true});
             }
         } else {
-            
-	        var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).where("status", "==", 1).get()
-	        var allStatus = verifies.docs.map((doc) => doc.data().status);
-	        var sum = allStatus.reduce(function (a, b) {
-	            return a + b;
-	        }, 0);
+            var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
+            var allStatus = verifies.docs.map((doc) => doc.data().status);
+            var sum = allStatus.reduce(function (a, b) {
+                return a + b;
+            }, 0);
 
-	        if (sum == verifiesRequired) {
-	            admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
-	            
-	            // fair count
-	            var count = 0;
-	            // dict with just song count
-	            var song_list_count = {}
-	            // dict with users-set
-	            var song_with_users = {}
-	            var verifies_jsons = {}
-	            
-	            // Fill the dicts with data
-	            verifies.forEach(doc => {
-	                // plus casts fair: true = 1, false = 0
-	                count = count + +(doc.data().fair)
-	                
-	                // Append JSON
-	                verifies_jsons[doc.data().userId] = doc.data();
-	                // Iterate over all the song in the list
-	                for (let song in doc.data().fix) {
-	                    // Unique song in the list
-	                    if (!(song["id"] in song_list_count)) {
-	                        song_list_count[song["id"]] = 1;
-	                        song_with_users[song["id"]] = [doc.data().userId];
-	                    } else {
-	                        // Not unique song
-	                        song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-	                        song_with_users[song["id"]].push(doc.data().userId);
-	                    }
-	                }
-	            });
-	            
-	            if (count >= 3) {
-	                // If fair >= 3 -> put in results
-	                // TODO add it results table
-	                
-	                // use "verifies_jsons" to create results
-	                // append explanations of first three users found
-
-	                return;
-	            } else {
-	                // Its deemed not fair, check if there is concensus.
-	                // Create sorted songs based on count array
-	                var sorted_count_song = Object.keys(song_list_count).map(function(key) {
-	                    return [key, song_list_count[key]];
-	                });
-	                // Sort the array based on the count
-	                sorted_count_song.sort(function(first, second) {
-	                    return second[1] - first[1];
-	                });
-	                // Now append only songs with count of three or more
-	                var concencus_songs = [];
-
-	                sorted_count_song.forEach(async function(song_and_count) {
-	                    if (song_and_count >= 3) {
-	                        concencus_songs.push(song_and_count);
-	                    } 
-	                });
-
-	                // If the list is smaller than 5 songs then no concensus: Its deemed fair
-	                // Thus rerouted to results
-	                if (concencus_songs.length < 5) {
-	                    // TODO add it results table
-
-	                    // use "verifies_jsons" to create results
-	                    // append explanations of first three users found
-
-	                    return;
-	                } else {
-	                    // Else append the reasoning of the first three users of last added song
-	                    // Create the aggregate
-
-	                    // use "verifies_jsons", "concencus_songs", "song_with_users" to create verifies
-	                    // append explanations of users found for the last song
-	                    // found in concencus_songs
-
-	                    return;
-                    }
-                }
+            if (sum >= verifiesRequired) {
+                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
+                
+                return;
             }
         }
     }
