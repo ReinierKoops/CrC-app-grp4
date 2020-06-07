@@ -148,17 +148,21 @@ export default {
                 vm.task = res.data;
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
+                vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
             }
-        }).catch(err => {
+        }).catch(() => {
             // Return to home page
-            console.log(err);
             this.dialog = true;
         });
     },
     created() {
+        this.time = new Date();
         window.addEventListener('beforeunload', this.unload);
+    },
+    beforeDestroy() {
+        this.unload();
     }
 }
 </script>
