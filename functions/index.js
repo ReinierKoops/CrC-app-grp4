@@ -388,17 +388,15 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
                 admin.firestore().collection('users').doc(newValue.userId).set({honey_status_verify: -1}, {merge: true});
             }
         } else {
-            var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
-            var algo_list = await admin.firestore().collection('tasks').doc(newValue.taskId).get();
+            var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).where("status", "==", 1).get()
+            var algo_list = await admin.firestore().collection('aggregate').doc(newValue.taskId).get();
             algo_list = algo_list.data();
             var allStatus = verifies.docs.map((doc) => doc.data().status);
             var sum = allStatus.reduce(function (a, b) {
                 return a + b;
             }, 0);
 
-            if (sum >= verifiesRequired) {
-                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
-
+            if (sum == verifiesRequired) {
                 // fair count
                 var fair_count = 0;
                 // All fixes as json before merged.
@@ -440,6 +438,8 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
                     json_object['user_verify_explain'] = fair_expl;
                     json_object['fair'] = false;
                 }
+
+                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
 
                 // Adds it to the aggregate table
                 return await admin.firestore()
