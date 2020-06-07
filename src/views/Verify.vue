@@ -81,7 +81,8 @@ export default {
                 algorithm: [],
                 fix: [],
                 explanations: [],
-                preferences: []
+                preferences: [],
+                time: 0
             },
             icon: 'mdi-account',
             dialog: false,
@@ -124,6 +125,19 @@ export default {
             } else {
                 this.show = true;
             }
+        },
+        unload() {
+            if (this.time != 0) {
+                var data = JSON.stringify({
+                    userId: firebase.auth().currentUser.uid,
+                    taskId: this.task.taskId,
+                    type: 'verifies',
+                    time: Math.round((new Date() - this.time) / 1000)
+                });
+                navigator.sendBeacon('https://us-central1-crc-party-grp4.cloudfunctions.net/incrementTime', data);
+            }          
+
+            window.removeEventListener('beforeunload', this.unload);
         }
     },
     mounted() {
@@ -142,6 +156,9 @@ export default {
             console.log(err);
             this.dialog = true;
         });
+    },
+    created() {
+        window.addEventListener('beforeunload', this.unload);
     }
 }
 </script>
