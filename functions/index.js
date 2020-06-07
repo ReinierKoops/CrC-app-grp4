@@ -168,7 +168,8 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             }
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).set(verify, { merge: true });
             
-            var aggregate = await admin.firestore().collection('aggregates').doc(taskId).get();
+            var aggregate = await admin.firestore().collection('aggregate').doc(taskId).get();
+            aggregate = aggregate.data();
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
             task = task.data();
 
