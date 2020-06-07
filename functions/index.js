@@ -170,13 +170,14 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             
             var aggregate = await admin.firestore().collection('aggregates').doc(taskId).get();
             var task = await admin.firestore().collection('tasks').doc(taskId).get();
+            task = task.data();
 
             let userTask = {
                 taskId: task.taskId,
                 userId: userId,
                 algorithm: task.algorithm,
-                fix: aggregate.fix,
-                explanations: aggregate.explanations,
+                fix: aggregate.user_gen_fix,
+                explanations: aggregate.user_gen_expl,
                 preferences: [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]
             }
 
