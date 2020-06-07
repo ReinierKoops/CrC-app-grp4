@@ -38,6 +38,7 @@
                 <v-col cols="3">
                     <recommendation 
                     name="Recommendation" 
+                    subname="by Algorithm."
                     draggable="true" 
                     :songs="task.algorithm"/>
                 </v-col>
@@ -49,7 +50,9 @@
                             <preference-list 
                             draggable="true" 
                             :songs="prefs" 
-                            :name="'User ' + (index + 1)"/>
+                            name="Preference top 5"
+                            :subname="'by User ' + (index + 1) + '.'"
+                            />
                         </v-col>
                     </v-row>
                     <v-row>
