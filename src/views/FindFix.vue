@@ -1,5 +1,8 @@
 <template>
-    <div class="findfix">
+    <v-container 
+    fluid
+    class="fill-height findfix"
+    >
         <v-dialog v-model="dialog" persistent width="500" height="300">
             <v-card>
                 <v-card-title 
@@ -33,18 +36,38 @@
         color="primary">
         </v-progress-circular>
 
-        <v-container id="task">
+        <v-col
+        cols="1"
+        class="black_dotted"
+        >
+        </v-col>
+        <v-col
+        cols="10"
+        id="task"
+        class="black_dotted"
+        >
             <v-row>
-                <v-col cols="3">
+                <v-col 
+                cols="3"
+                class="add-some-padding"
+                >
                     <recommendation 
                     name="Recommendation" 
                     subname="by Algorithm."
                     draggable="true" 
                     :songs="task.algorithm"/>
                 </v-col>
-                <v-col>
-                    <v-row>
+
+                <v-col
+                cols="9"
+                class="red_dotted"
+                >
+                    <v-row
+                    class="blue_dotted"
+                    >
                         <v-col 
+                        cols="4"
+                        class="pink_dotted"
                         v-for="(prefs, index) in [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]" 
                         :key="index">
                             <preference-list 
@@ -55,30 +78,61 @@
                             />
                         </v-col>
                     </v-row>
-                    <v-row>
-                        <p><b>Are the "Recommendations" fair to you?</b>
-                        <br>Is the list unfair? <b>Drag the preferred songs</b> into the <b>Recommendations</b> and provide a <b>reason</b>. Finally, click <b>Submit</b>.
-                        <br>Is the list fair? <b>Check</b> the box, give a <b>reason</b> and click <b>Submit</b>.</p>
-                        <v-checkbox 
-                        id="fair" 
-                        label="By checking this box I say that the original recommendation made by the algorithm is fair."></v-checkbox>
-                        <v-text-field 
-                        id="rationale" 
-                        label="Explanation" outlined/>
-                        <transition 
-                        name="fade">
-                            <div v-if="show">
-                                <v-alert id="alert" type="error">
-                                    {{ errorText }}
-                                </v-alert>
-                            </div>
-                        </transition> 
-                        <v-btn v-on:click="clickSubmit">Submit</v-btn>
-                    </v-row>
+
+
+
+                    <v-card 
+                    class="elevation-10"
+                    >
+                        <v-card-title class="display-1">
+                            Is "Recommendation" fair for every user?
+                        </v-card-title>
+
+                        <v-divider></v-divider>
+
+                        <v-card-text>
+                            <p class="body-1">
+                            If you think it is unfair, make it more fair by <b>dragging the songs from other preference lists </b> into <b>Recommendations</b>.
+                            Provide a reasoning why.</p>
+
+                            <v-text-field 
+                            id="rationale" 
+                            clearable
+                            dense
+                            :counter="100"
+                            label="Explanation" 
+                            outlined/>
+
+                            <transition 
+                            name="fade">
+                                <div v-if="show">
+                                    <v-alert id="alert" type="error">
+                                        {{ errorText }}
+                                    </v-alert>
+                                </div>
+                            </transition> 
+
+                            <v-btn 
+                                tile 
+                                :block="true"
+                                color="#2296F3"
+                                class="white--text"
+                                v-on:click="clickSubmit">
+                                Submit
+                            </v-btn>
+                        </v-card-text>
+
+
+                    </v-card>
                 </v-col>
             </v-row>
-        </v-container>
-    </div>
+        </v-col>
+        <v-col
+        cols="1"
+        class="black_dotted"
+        >
+        </v-col>
+    </v-container>
 </template>
 
 <script>
@@ -256,6 +310,9 @@ export default {
 </script>
 
 <style>
+.add-some-padding{
+    padding-top: 24px;
+}
 .v-progress-circular {
     position: fixed;
     top: 50%;
