@@ -139,16 +139,17 @@ export default {
                 recommendations = this.task.algorithm.map((song) => song.id);
             }
             if (event.detail.source == "recommendation") {
-                if (this.recommendationSwap != null) {
-                    //Sort the recommendation list
-                    let oldIndex = recommendations.indexOf(this.recommendationSwap);
-                    let newIndex = recommendations.indexOf(event.detail.id);
-                    
-                    const deleted = this.task.algorithm.splice(oldIndex, 1);
-                    this.task.algorithm.splice(newIndex, 0, deleted[0]);
-                } else {
-                    this.recommendationSwap = event.detail.id;
-                }
+                //if (this.recommendationSwap != null) {
+                //    //Sort the recommendation list
+                //    let oldIndex = recommendations.indexOf(this.recommendationSwap);
+                //    let newIndex = recommendations.indexOf(event.detail.id);
+                //    
+                //    const deleted = this.task.algorithm.splice(oldIndex, 1);
+                //    this.task.algorithm.splice(newIndex, 0, deleted[0]);
+                //} else {
+                //    this.recommendationSwap = event.detail.id;
+                //}
+                this.recommendationSwap = event.detail.id;
             } else {
                 this.preferenceSwap = event.detail.id;
             }
