@@ -127,7 +127,7 @@ export default {
             }
         },
         unload() {
-            if (this.time != 0) {
+            if (this.task.taskId != "") {
                 var data = JSON.stringify({
                     userId: firebase.auth().currentUser.uid,
                     taskId: this.task.taskId,
@@ -148,7 +148,6 @@ export default {
                 vm.task = res.data;
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
-                vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
             }
