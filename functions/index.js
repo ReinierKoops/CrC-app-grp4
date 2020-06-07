@@ -77,7 +77,7 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
             admin.firestore().collection('fixes').doc(taskId + '-' + userId).set({nr_visits: 1, time_spent: 0}, { merge: true });
         }
     } else { // No task could be found
-        res.send("No task found!");
+        res.status(400).send("No task found!");
     }
 });
 
@@ -189,7 +189,7 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
             admin.firestore().collection('users').doc(userId).update({verifies_done: increment});
         }
     } else { // No task could be found
-        res.send("No task found!");
+        res.status(400).send("No task found!");
     }
 });
 

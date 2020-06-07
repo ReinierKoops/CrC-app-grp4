@@ -148,7 +148,6 @@ export default {
                 vm.task = res.data;
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
-                console.log(vm.task);
                 vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
