@@ -202,7 +202,6 @@ export default {
                 vm.originalList = [...vm.task.algorithm];
                 document.getElementById('task').style.display = "block";
                 document.getElementById('loader').style.display = "none";
-                vm.time = new Date();
             } catch (e) {
                 this.dialog = true;
             }

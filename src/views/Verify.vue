@@ -33,8 +33,8 @@
                         <v-col>
                             <b>Are the <i>new</i> recommendations fair to you?</b>
                             <v-radio-group>
-                                <v-radio name="fair" label="Yes" value="true"/>
-                                <v-radio name="fair" label="No" value="false"/>
+                                <v-radio name="fair" label="Yes" :value="true"/>
+                                <v-radio name="fair" label="No" :value="false"/>
                             </v-radio-group>
                             <v-text-field id="rationale" label="Explanation" outlined/>
                             <transition name="fade">
@@ -98,7 +98,7 @@ export default {
                 this.errorText = "Please make a selection on whether the list is fair!";
                 this.displayAlert();
             } else {
-                fair = fair.value;
+                fair = JSON.parse(fair.value);
                 console.log(fair);
                 let explanation = document.getElementById('rationale').value;
                 if (explanation.length < 100) {
@@ -111,7 +111,7 @@ export default {
                         status: 1,
                         fair: fair,
                         explanation: explanation
-                    }).then(() => {
+                    }, {merge: true}).then(() => {
                         // Go to the home page
                         router.push({ name: 'Home' })
                     });
