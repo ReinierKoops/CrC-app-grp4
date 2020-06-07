@@ -227,8 +227,6 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
             }, 0);
 
             if (sum == fixesRequired) {
-                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
-
                 // fair count
                 var fair_count = 0;
                 // dict with just song count (id => count)
@@ -280,6 +278,9 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     json_object['algorithm_expl'] = fair_expl;
                     json_object['fair'] = true;
 
+                    // Set status of task to 2
+                    admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
+
                     // Adds it to the results table
                     return await admin.firestore()
                     .collection('results')
@@ -324,6 +325,9 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                         // But there was no consensus on the solution
                         json_object['fair'] = false;
 
+                        // Set status of task to 2
+                        admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
+
                         // Adds it to the results table
                         return await admin.firestore()
                         .collection('results')
@@ -355,7 +359,10 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                         });
                         json_object['user_gen_expl'] = user_gen_expl;
 
-                        // Adds it to the results table
+                        // Set status of task to 1
+                        admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
+
+                        // Adds it to the aggregate table
                         return await admin.firestore()
                         .collection('aggregate')
                         .doc(fixes_jsons[0].taskId)
