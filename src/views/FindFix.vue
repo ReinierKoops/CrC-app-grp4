@@ -2,7 +2,10 @@
     <div class="findfix">
         <v-dialog v-model="dialog" persistent width="500" height="300">
             <v-card>
-                <v-card-title class="headline">We could not find a task for you!</v-card-title>
+                <v-card-title 
+                class="headline">
+                    We could not find a task for you!
+                </v-card-title>
 
                 <v-card-text>
                 While fetching a task for you something went wrong! It could be the case that you completed more than 5 tasks of this type or that no task is available at this time. Please try again later!
@@ -12,29 +15,55 @@
 
                 <v-card-actions>
 
-                <v-btn :block="true" color="#2296F3" class="white--text" :to="{ name: 'Home' }">Return to the homepage</v-btn>
+                <v-btn 
+                :block="true" 
+                color="#2296F3" 
+                class="white--text" 
+                :to="{ name: 'Home' }">
+                    Return to the homepage
+                </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-progress-circular id="loader" indeterminate size="70" color="primary"></v-progress-circular>
+
+        <v-progress-circular 
+        id="loader" 
+        indeterminate 
+        size="70" 
+        color="primary">
+        </v-progress-circular>
+
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation name="Recommendation" draggable="true" :songs="task.algorithm"/>
+                    <recommendation 
+                    name="Recommendation" 
+                    draggable="true" 
+                    :songs="task.algorithm"/>
                 </v-col>
                 <v-col>
                     <v-row>
-                        <v-col v-for="(prefs, index) in [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]" :key="index">
-                            <preference-list draggable="true" :songs="prefs" :name="'User ' + (index + 1)"/>
+                        <v-col 
+                        v-for="(prefs, index) in [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]" 
+                        :key="index">
+                            <preference-list 
+                            draggable="true" 
+                            :songs="prefs" 
+                            :name="'User ' + (index + 1)"/>
                         </v-col>
                     </v-row>
                     <v-row>
                         <p><b>Are the "Recommendations" fair to you?</b>
                         <br>Is the list unfair? <b>Drag the preferred songs</b> into the <b>Recommendations</b> and provide a <b>reason</b>. Finally, click <b>Submit</b>.
                         <br>Is the list fair? <b>Check</b> the box, give a <b>reason</b> and click <b>Submit</b>.</p>
-                        <v-checkbox id="fair" label="By checking this box I say that the original recommendation made by the algorithm is fair."></v-checkbox>
-                        <v-text-field id="rationale" label="Explanation" outlined/>
-                        <transition name="fade">
+                        <v-checkbox 
+                        id="fair" 
+                        label="By checking this box I say that the original recommendation made by the algorithm is fair."></v-checkbox>
+                        <v-text-field 
+                        id="rationale" 
+                        label="Explanation" outlined/>
+                        <transition 
+                        name="fade">
                             <div v-if="show">
                                 <v-alert id="alert" type="error">
                                     {{ errorText }}
