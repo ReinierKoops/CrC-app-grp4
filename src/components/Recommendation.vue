@@ -1,10 +1,20 @@
 <template>
-  <div>
-    <h3>{{ name }}</h3>
+  <v-card
+  class="elevation-10"
+  tile
+  >
+    <v-card-title>
+      {{ name }}
+    </v-card-title>
+    <v-card-subtitle>
+      {{ subname }}
+    </v-card-subtitle>
 
-    <v-btn v-if="draggable" v-on:click="clickReset">Reset</v-btn>
-    
-    <v-list>
+    <v-divider></v-divider>
+
+    <v-list
+    dense
+    >
       <v-list-item 
       :draggable="draggable" 
       v-for="song in songs" 
@@ -15,18 +25,35 @@
       v-on:drop="dragDrop" 
       v-on:dragover="dragOver">
 
-        <v-list-item-content>
-          <v-list-item-title v-text="song.artist + ' - ' + song.title"/>
+        <v-list-item-content two-line>
+          <v-list-item-title>{{ song.title }}</v-list-item-title>
+          <v-list-item-subtitle>{{ song.artist }}</v-list-item-subtitle>
+          <v-divider></v-divider>
         </v-list-item-content>
 
       </v-list-item>
-    </v-list>    
-  </div>
+    </v-list>
+
+    <v-card-actions>
+      <v-btn 
+            tile 
+            :to="{ name: 'Verify' }"
+            :block="true"
+            color="#2296F3"
+            class="white--text"
+            v-if="draggable" 
+            v-on:click="clickReset"
+            >
+                <v-icon>mdi-undo</v-icon>Reset
+      </v-btn>
+    </v-card-actions>
+
+  </v-card>
 </template>
 
 <script>
 export default {
-  props: ["songs", "draggable", "name"],
+  props: ["songs", "draggable", "name", "subname"],
   methods: {
     dragStart: function(ev) {
       let closest = ev.target.closest("div.v-list-item");

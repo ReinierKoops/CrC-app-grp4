@@ -20,7 +20,7 @@
         <v-container id="task">
             <v-row>
                 <v-col cols="3">
-                    <recommendation name="Recommendation Fixed" :songs="task.fix"></recommendation>
+                    <recommendation name="New Recommendation" :songs="task.fix"></recommendation>
                     <recommendation name="Old Recommendation" :songs="task.algorithm"></recommendation>   
                 </v-col>
                 <v-col>

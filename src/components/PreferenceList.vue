@@ -1,17 +1,48 @@
 <template>
-  <div>
-    <h3>Preferences of {{ name }}</h3>
-    <v-list>
-      <v-list-item :draggable="draggable" v-for="(song, index) in songs" :id="song.id" :key="name + song.title" v-on:dragstart="dragStart" v-on:dragenter="dragEnter" v-on:drop="dragDrop" v-on:dragover="dragOver">
-        <v-list-item-content><v-list-item-title v-text="(index + 1) + '. ' + song.artist + ' - ' + song.title"/></v-list-item-content>
+  <v-card
+  class="elevation-10"
+  tile
+  >
+    <v-card-title>
+      {{ name }}
+    </v-card-title>
+    <v-card-subtitle>
+      {{ subname }}
+    </v-card-subtitle>
+
+    <v-divider></v-divider>
+
+    <v-list
+    dense
+    >
+      <v-list-item 
+      :draggable="draggable" 
+      v-for="(song, index) in songs" 
+      :id="song.id" 
+      :key="name + song.title" 
+      v-on:dragstart="dragStart" 
+      v-on:dragenter="dragEnter" 
+      v-on:drop="dragDrop" 
+      v-on:dragover="dragOver">
+
+        <v-list-item-icon>
+          <v-icon>mdi-numeric-{{index + 1}}</v-icon>
+        </v-list-item-icon>
+        
+        <v-list-item-content two-line>
+          <v-list-item-title>{{ song.title }}</v-list-item-title>
+          <v-list-item-subtitle>{{ song.artist }}</v-list-item-subtitle>
+          <v-divider></v-divider>
+        </v-list-item-content>
+          
       </v-list-item>
     </v-list>   
-  </div>
+  </v-card>
 </template>
 
 <script>
 export default {
-  props: ["songs", "name", "draggable"],
+  props: ["songs", "name", "subname", "draggable"],
   methods: {
     dragStart: function(ev) {
       let closest = ev.target.closest("div.v-list-item");
