@@ -187,7 +187,7 @@ exports.incrementTime = functions.https.onRequest(function (req, res) {
     res.set('Access-Control-Allow-Origin', "*");
     res.set('Access-Control-Allow-Methods', 'GET, POST');
 
-    data = JSON.parse(req.body);
+    var data = JSON.parse(req.body);
 
     admin.firestore().collection(data.type).doc(data.taskId + '-' + data.userId).update({
         time_spent: admin.firestore.FieldValue.increment(data.time)
@@ -209,77 +209,92 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                 admin.firestore().collection('users').doc(newValue.userId).set({honey_status_fix: -1}, {merge: true});
             }
         } else {
-            var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).get();
-            var allStatus = fixes.docs.map((doc) => doc.data().status);
-            var sum = allStatus.reduce(function (a, b) {
-                return a + b;
-            }, 0);
+	        var fixes = await admin.firestore().collection('fixes').where("taskId", "==", newValue.taskId).get();
+	        var allStatus = fixes.docs.map((doc) => doc.data().status);
+	        var sum = allStatus.reduce(function (a, b) {
+	            return a + b;
+	        }, 0);
 
-            if (sum >= fixesRequired) {
-                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
+	        if (sum >= fixesRequired) {
+	            admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 1});
 
-                // fair count
-                var count = 0;
-                // dict with just song count
-                var song_list_count = {}
-                // dict with users-set
-                var song_users = {}
-                
-                // Fill the dicts with data
-                fixes.then(snapshot => {
-                    snapshot.forEach(doc => {
-                        // plus casts fair: true = 1, false = 0
-                        count = count + +(doc.data().fair)
+	            // fair count
+	            var count = 0;
+	            // dict with just song count
+	            var song_list_count = {}
+	            // dict with users-set
+	            var song_with_users = {}
+	            var fixes_jsons = {}
+	            
+	            // Fill the dicts with data
+	            fixes.then(snapshot => {
+	                snapshot.forEach(doc => {
+	                    // plus casts fair: true = 1, false = 0
+	                    count = count + +(doc.data().fair)
+	                    
+	                    // Append JSON
+	                    fixes_jsons[doc.data().userId] = doc.data();
 
-                        // Iterate over all the song in the list
-                        for (let song in doc.data().fix) {
-                            // Unique song in the list
-                            if (!(song["id"] in song_list_count)) {
-                                song_list_count[song["id"]] = 1;
-                                song_users[song["id"]] = [doc.data().userId];
-                            } else {
-                                // Not unique song
-                                song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-                                song_users[song["id"]].push(doc.data().userId);
-                            }
+	                    // Iterate over all the song in the list
+	                    for (let song in doc.data().fix) {
+	                        // Unique song in the list
+	                        if (!(song["id"] in song_list_count)) {
+	                            song_list_count[song["id"]] = 1;
+	                            song_with_users[song["id"]] = [doc.data().userId];
+	                        } else {
+	                            // Not unique song
+	                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+	                            song_with_users[song["id"]].push(doc.data().userId);
                         }
-
-                    });
-                })
+                    }
+                });
+            })
+            
+            if (count >= 3) {
+                // If fair >= 3 -> put in results
+                // TODO add it results table
                 
-                if (count >= 3) {
-                    // If fair >= 3 -> put in results
+                // use "fixes_jsons" to create results
+                // append explanations of first three users found
+
+                return;
+            } else {
+                // Its deemed not fair, check if there is concensus.
+                // Create sorted songs based on count array
+                var sorted_count_song = Object.keys(song_list_count).map(function(key) {
+                    return [key, song_list_count[key]];
+                });
+                // Sort the array based on the count
+                sorted_count_song.sort(function(first, second) {
+                    return second[1] - first[1];
+                });
+                // Now append only songs with count of three or more
+                var concencus_songs = [];
+
+                sorted_count_song.forEach(async function(song_and_count) {
+                    if (song_and_count >= 3) {
+                        concencus_songs.push(song_and_count);
+                    } 
+                });
+
+                // If the list is smaller than 5 songs then no concensus: Its deemed fair
+                // Thus rerouted to results
+                if (concencus_songs.length < 5) {
                     // TODO add it results table
+
+                    // use "fixes_jsons" to create results
+                    // append explanations of first three users found
+
                     return;
                 } else {
-                    // Its deemed not fair, check if there is concensus.
-                    // Create sorted songs based on count array
-                    var sorted_count_song = Object.keys(song_list_count).map(function(key) {
-                        return [key, song_list_count[key]];
-                    });
-                    // Sort the array based on the count
-                    sorted_count_song.sort(function(first, second) {
-                        return second[1] - first[1];
-                    });
-                    // Now append only songs with count of three or more
-                    var concencus_songs = [];
+                    // Else append the reasoning of the first three users of last added song
+                    // Create the aggregate
 
-                    sorted_count_song.forEach(async function(song_and_count) {
-                        if (song_and_count >= 3) {
-                            concencus_songs.push(song_and_count);
-                        } 
-                    });
+                    // use "fixes_jsons", "concencus_songs", "song_with_users" to create verifies
+                    // append explanations of users found for the last song
+                    // found in concencus_songs
 
-                    // If the list is smaller than 5 songs then no concensus: Its deemed fair
-                    // Thus rerouted to results
-                    if (concencus_songs.length < 5) {
-                        // TODO add it results table
-                        return;
-                    } else {
-                        // Else append the reasoning of the first three users of last added song
-                        // Create the aggregate
-                        return;
-                    }
+                    return;
                 }
             }
         }
@@ -298,16 +313,96 @@ exports.onWriteVerify = functions.firestore.document('verifies/{id}').onWrite(as
                 admin.firestore().collection('users').doc(newValue.userId).set({honey_status_verify: -1}, {merge: true});
             }
         } else {
-            var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
-            var allStatus = verifies.docs.map((doc) => doc.data().status);
-            var sum = allStatus.reduce(function (a, b) {
-                return a + b;
-            }, 0);
+            
+	        var verifies = await admin.firestore().collection('verifies').where("taskId", "==", newValue.taskId).get()
+	        var allStatus = verifies.docs.map((doc) => doc.data().status);
+	        var sum = allStatus.reduce(function (a, b) {
+	            return a + b;
+	        }, 0);
 
-            if (sum >= verifiesRequired) {
-                admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
-                
-                // TODO: Create result aggregation and write to db
+	        if (sum >= verifiesRequired) {
+	            admin.firestore().collection('tasks').doc(newValue.taskId).update({status: 2});
+	            
+	            // fair count
+	            var count = 0;
+	            // dict with just song count
+	            var song_list_count = {}
+	            // dict with users-set
+	            var song_with_users = {}
+	            var verifies_jsons = {}
+	            
+	            // Fill the dicts with data
+	            verifies.then(snapshot => {
+	                snapshot.forEach(doc => {
+	                    // plus casts fair: true = 1, false = 0
+	                    count = count + +(doc.data().fair)
+	                    
+	                    // Append JSON
+	                    verifies_jsons[doc.data().userId] = doc.data();
+
+	                    // Iterate over all the song in the list
+	                    for (let song in doc.data().fix) {
+	                        // Unique song in the list
+	                        if (!(song["id"] in song_list_count)) {
+	                            song_list_count[song["id"]] = 1;
+	                            song_with_users[song["id"]] = [doc.data().userId];
+	                        } else {
+	                            // Not unique song
+	                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+	                            song_with_users[song["id"]].push(doc.data().userId);
+	                        }
+	                    }
+
+	                });
+	            })
+	            
+	            if (count >= 3) {
+	                // If fair >= 3 -> put in results
+	                // TODO add it results table
+	                
+	                // use "verifies_jsons" to create results
+	                // append explanations of first three users found
+
+	                return;
+	            } else {
+	                // Its deemed not fair, check if there is concensus.
+	                // Create sorted songs based on count array
+	                var sorted_count_song = Object.keys(song_list_count).map(function(key) {
+	                    return [key, song_list_count[key]];
+	                });
+	                // Sort the array based on the count
+	                sorted_count_song.sort(function(first, second) {
+	                    return second[1] - first[1];
+	                });
+	                // Now append only songs with count of three or more
+	                var concencus_songs = [];
+
+	                sorted_count_song.forEach(async function(song_and_count) {
+	                    if (song_and_count >= 3) {
+	                        concencus_songs.push(song_and_count);
+	                    } 
+	                });
+
+	                // If the list is smaller than 5 songs then no concensus: Its deemed fair
+	                // Thus rerouted to results
+	                if (concencus_songs.length < 5) {
+	                    // TODO add it results table
+
+	                    // use "verifies_jsons" to create results
+	                    // append explanations of first three users found
+
+	                    return;
+	                } else {
+	                    // Else append the reasoning of the first three users of last added song
+	                    // Create the aggregate
+
+	                    // use "verifies_jsons", "concencus_songs", "song_with_users" to create verifies
+	                    // append explanations of users found for the last song
+	                    // found in concencus_songs
+
+	                    return;
+                    }
+                }
             }
         }
     }
