@@ -27,12 +27,14 @@ exports.requestFix = functions.https.onRequest(async (req, res) => {
     var taskId;
     var newTask = false;
 
+    var honey_fix = await admin.firestore().collection('fixes').doc("honeyfix-" + userId).get();
+
     if (honey_status >= 0) {
         var fixes = await admin.firestore().collection('fixes').where("userId", "==", userId).where("status", "==", 0).get();
         if (!fixes.empty) { // Check if task is open for user
             taskId = fixes.docs[0].data().taskId;
             admin.firestore().collection('fixes').doc(taskId + '-' + userId).update({nr_visits: increment});
-        } else if (honey_status == 0) {
+        } else if (honey_status == 0 && !honey_fix.exists) {
             taskId = "honeyfix";
             newTask = true;
         } else if (userFixes < fixLimit) { // Check if user limit is not reached
@@ -94,12 +96,14 @@ exports.requestVerify = functions.https.onRequest(async (req, res) => {
     var taskId;
     var newTask = false;
 
+    var honey_verify = await admin.firestore().collection('verifies').doc("honeyverify-" + userId).get();
+
     if (honey_status >= 0) {
         var verifies = await admin.firestore().collection('verifies').where("userId", "==", userId).where("status", "==", 0).get();
         if (!verifies.empty) { // Check if task is open for user
             taskId = verifies.docs[0].data().taskId;
             admin.firestore().collection('verifies').doc(taskId + '-' + userId).update({nr_visits: increment});
-        } else if (honey_status == 0) {
+        } else if (honey_status == 0 && !honey_verify.exists) {
             taskId = "honeyverify";
             newTask = true;
         } else if (userVerifies < verifyLimit) { // Check if user limit is not reached
