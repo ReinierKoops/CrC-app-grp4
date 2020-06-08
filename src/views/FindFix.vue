@@ -79,10 +79,9 @@
                         </v-col>
                     </v-row>
 
-
-
                     <v-card 
                     class="elevation-10"
+                    tile
                     >
                         <v-card-title class="display-1">
                             Is "Recommendation" fair for every user?
@@ -106,7 +105,10 @@
                             <transition 
                             name="fade">
                                 <div v-if="show">
-                                    <v-alert id="alert" type="error">
+                                    <v-alert 
+                                    id="alert" 
+                                    type="error"
+                                    dense>
                                         {{ errorText }}
                                     </v-alert>
                                 </div>
@@ -172,6 +174,7 @@ export default {
     methods: {
         clickSubmit: function() {
             let userId = firebase.auth().currentUser.uid;
+            // update fair to be automatically set if the list changes
             let fair = document.getElementById('fair').checked;
             let string1 = JSON.stringify(this.originalList);
             let string2 = JSON.stringify(this.task.algorithm);
@@ -312,6 +315,14 @@ export default {
 <style>
 .add-some-padding{
     padding-top: 24px;
+}
+.add_border{
+  border-style: dotted;
+  border-color: gray;
+  border-width: 0.5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 2px;
 }
 .v-progress-circular {
     position: fixed;

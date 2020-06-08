@@ -16,6 +16,7 @@
     dense
     >
       <v-list-item 
+      class="add_border"
       :draggable="draggable" 
       v-for="song in songs" 
       :id="song.id" 
