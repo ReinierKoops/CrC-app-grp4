@@ -3,7 +3,11 @@
     fluid
     class="fill-height findfix"
     >
-        <v-dialog v-model="dialog" persistent width="500" height="300">
+        <v-dialog 
+        v-model="dialog" 
+        persistent 
+        width="500" 
+        height="300">
             <v-card>
                 <v-card-title 
                 class="headline">
@@ -37,14 +41,12 @@
         </v-progress-circular>
 
         <v-col
-        cols="1"
-        class="black_dotted"
-        >
+        cols="1">
         </v-col>
+
         <v-col
         cols="10"
         id="task"
-        class="black_dotted"
         >
             <v-row>
                 <v-col 
@@ -60,14 +62,10 @@
 
                 <v-col
                 cols="9"
-                class="red_dotted"
                 >
-                    <v-row
-                    class="blue_dotted"
-                    >
+                    <v-row>
                         <v-col 
                         cols="4"
-                        class="pink_dotted"
                         v-for="(prefs, index) in [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]" 
                         :key="index">
                             <preference-list 
@@ -129,11 +127,11 @@
                 </v-col>
             </v-row>
         </v-col>
+
         <v-col
-        cols="1"
-        class="black_dotted"
-        >
+        cols="1">
         </v-col>
+
     </v-container>
 </template>
 

@@ -3,10 +3,10 @@
   class="elevation-10"
   tile
   >
-    <v-card-title>
-      {{ name }}
+    <v-card-title class="subtitle-1">
+      <b>{{ name }}</b>
     </v-card-title>
-    <v-card-subtitle>
+    <v-card-subtitle class="caption">
       {{ subname }}
     </v-card-subtitle>
 
@@ -35,13 +35,12 @@
       </v-list-item>
     </v-list>
 
-    <v-card-actions>
+    <v-card-actions v-if="draggable">
       <v-btn 
             tile 
             :block="true"
             color="#2296F3"
             class="white--text"
-            v-if="draggable" 
             v-on:click="clickReset"
             >
                 <v-icon>mdi-undo</v-icon>Reset

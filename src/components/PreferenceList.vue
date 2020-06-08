@@ -3,10 +3,10 @@
   class="elevation-10"
   tile
   >
-    <v-card-title>
-      {{ name }}
+    <v-card-title class="subtitle-1">
+      <b>{{ name }}</b>
     </v-card-title>
-    <v-card-subtitle>
+    <v-card-subtitle class="caption">
       {{ subname }}
     </v-card-subtitle>
 
