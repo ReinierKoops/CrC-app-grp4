@@ -98,7 +98,7 @@
                             tile
                             >
                                 <v-card-title class="subtitle-1">
-                                    Is the <b>"New Recommendations"</b> fair to you?
+                                    Is the <b>"New Recommendation"</b> fair to you?
                                 </v-card-title>
 
                                 <v-divider></v-divider>
@@ -231,10 +231,12 @@ export default {
                 this.displayAlert();
             } else {
                 fair = JSON.parse(fair.value);
-                console.log(fair);
                 let explanation = document.getElementById('rationale').value;
-                if (explanation.length < 100) {
+                if (explanation.length < 20) {
                     this.errorText = "Please provide more explanation!";
+                    this.displayAlert();
+                } else if (explanation.length > 100) {
+                    this.errorText = "Please shorten your explanation to at most 100 characters!";
                     this.displayAlert();
                 } else {
                     firebase.firestore().collection('verifies').doc(this.task.taskId + '-' + userId).set({
