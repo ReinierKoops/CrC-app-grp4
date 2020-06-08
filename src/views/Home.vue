@@ -71,7 +71,7 @@
                     justify="center"                    
                     cols="7"
                     >
-                        <youtube video-id="FaiX7lvQCZM" height="375" class="elevation-10"></youtube>
+                        <youtube video-id="oLTNtvIHJ7M" height="375" class="elevation-10"></youtube>
                     </v-row>
                 </v-col>
                 <v-col
