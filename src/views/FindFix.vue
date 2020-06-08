@@ -174,7 +174,6 @@ export default {
     methods: {
         clickSubmit: function() {
             let userId = firebase.auth().currentUser.uid;
-            let fair = JSON.stringify(this.task.algorithm) == JSON.stringify(this.originalList);
             let explanation = document.getElementById('rationale').value;
             if (explanation.length < 20) {
                 this.errorText = "Please provide explanation of atleast 20 characters!";
@@ -183,6 +182,8 @@ export default {
                 this.errorText = "Please shorten your explanation to at most " + this.max_characters + " characters!";
                 this.displayAlert(); 
             } else {
+                let fair = JSON.stringify(this.task.algorithm.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))) == 
+                            JSON.stringify(this.originalList.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))));
                 firebase.firestore().collection('fixes').doc(this.task.taskId + '-' + userId).set({
                     taskId: this.task.taskId,
                     userId: userId,
