@@ -29,7 +29,6 @@
         <v-list-item-content two-line>
           <v-list-item-title>{{ song.title }}</v-list-item-title>
           <v-list-item-subtitle>{{ song.artist }}</v-list-item-subtitle>
-          <v-divider></v-divider>
         </v-list-item-content>
 
       </v-list-item>

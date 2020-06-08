@@ -67,7 +67,7 @@
 
                         <recommendation 
                         name="Old Recommendation" 
-                        subname="by algorithm."
+                        subname="by Algorithm."
                         :songs="task.algorithm"
                         />   
 
@@ -104,6 +104,8 @@
                                 <v-divider></v-divider>
 
                                 <v-card-text>
+                                    <p>The order for the <b>Recommendation lists</b> shouldn't matter.</p>
+
                                     <v-radio-group>
                                         <v-radio 
                                         name="fair" 
