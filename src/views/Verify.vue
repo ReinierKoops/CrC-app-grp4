@@ -98,7 +98,7 @@
                             tile
                             >
                                 <v-card-title class="subtitle-1">
-                                    Is the <b>"New Recommendation"</b> fair to you?
+                                    Is <b>"New Recommendation"</b> fair to you?
                                 </v-card-title>
 
                                 <v-divider></v-divider>
