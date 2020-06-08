@@ -233,7 +233,7 @@ export default {
                 fair = JSON.parse(fair.value);
                 let explanation = document.getElementById('rationale').value;
                 if (explanation.length < 20) {
-                    this.errorText = "Please provide explanation of atleast 20 letters!";
+                    this.errorText = "Please provide explanation of atleast 20 characters!";
                     this.displayAlert();
                 } else if (explanation.length > 100) {
                     this.errorText = "Please shorten your explanation to at most 100 characters!";
