@@ -99,7 +99,7 @@
                             id="rationale" 
                             clearable
                             dense
-                            :counter="100"
+                            :counter="max_characters"
                             label="Explanation" 
                             outlined/>
 
@@ -166,40 +166,35 @@ export default {
             dialog: false,
             errorText: "This is an error!",
             show: false,
-            time: 0
+            time: 0,
+            max_characters: 100
         }
     },
     methods: {
         clickSubmit: function() {
             let userId = firebase.auth().currentUser.uid;
-            let fair = document.getElementById('fair').checked;
-            let string1 = JSON.stringify(this.originalList);
-            let string2 = JSON.stringify(this.task.algorithm);
+            let fair = JSON.stringify(this.task.algorithm) == JSON.stringify(this.originalList);
             let explanation = document.getElementById('rationale').value;
-            if (string1 == string2 && !fair) {
-                this.errorText = "You say the list is not fair but the list has not been changed!";
+            if (explanation.length < 20) {
+                this.errorText = "Please provide more explanation!";
                 this.displayAlert();
-            } else if (string1 != string2 && fair) {
-                this.errorText = "You say the list is fair but you have changed the original list!";
-                this.displayAlert();
+            } else if (explanation.length > this.max_characters) {
+                this.errorText = "Please shorten your explanation to at most " + this.max_characters + " characters!";
+                this.displayAlert(); 
             } else {
-                if (explanation.length < 100) {
-                    this.errorText = "Please provide more explanation!";
-                    this.displayAlert();
-                } else {
-                    firebase.firestore().collection('fixes').doc(this.task.taskId + '-' + userId).set({
-                        taskId: this.task.taskId,
-                        userId: userId,
-                        status: 1,
-                        fix: this.task.algorithm,
-                        fair: fair,
-                        explanation: explanation
-                    }).then(() => {
-                        // Go to the home page
-                        router.push({ name: 'Home' })
-                    });
-                }
-            }        
+                firebase.firestore().collection('fixes').doc(this.task.taskId + '-' + userId).set({
+                    taskId: this.task.taskId,
+                    userId: userId,
+                    status: 1,
+                    fix: this.task.algorithm,
+                    fair: fair,
+                    explanation: explanation
+                }).then(() => {
+                    // Go to the home page
+                    router.push({ name: 'Home' })
+                });
+            }
+                   
         },
         displayAlert() {
             if (this.show) {
