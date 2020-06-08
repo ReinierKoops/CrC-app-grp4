@@ -19,7 +19,7 @@
                     justify="center"
                     >
                         <v-im>
-                            <youtube video-id="oLTNtvIHJ7M" height="375" class="elevation-10"></youtube>
+                            <youtube video-id="TZaCWmmbFO8" height="375" class="elevation-10"></youtube>
                         </v-im>
                     </v-col>
                     <v-col
@@ -31,7 +31,18 @@
                             </v-card-title>
                             <v-divider></v-divider>
                             <v-card-text class="text-left">
-                                
+                                <v-card-subtitle class="text-left subtitle-1">
+                                    <b>Party</b> is a system that creates fair music recommendations for groups. To do this we need <b>your</b> help! Are you new to <b>Party</b>? Watch the video and get started! 
+                                </v-card-subtitle>
+
+                                Imagine this: you would like to go on a roadtrip together with your two best friends. For this roadtrip you would like to select some music you can listen to.
+                                You and your best friends submit your preferences and an algorithm creates a list of songs that you will listen to for you. During your roadtrip you don't want
+                                to find out that none of your songs were actually included in the recommendation created by the algorithm.
+                                <br/>
+                                <br/>
+                                This is where <b>Party</b> comes in. By completing the two tasks listed below as explained in the video, <b>you</b> will help creating fair music recommendations
+                                for other groups!
+
                             </v-card-text>
                             
                     </v-col>
