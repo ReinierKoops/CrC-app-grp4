@@ -93,9 +93,11 @@
                             Provide a <b>reasoning why</b>. The order for <b>Recommendation</b> shouldn't matter.</p>
 
                             <v-text-field 
-                            id="rationale" 
+                            id="rationale"
+                            v-model="explanation" 
                             clearable
                             dense
+                            required
                             :rules="explanationRules"
                             :counter="max_characters"
                             label="Explanation" 
@@ -154,6 +156,7 @@ export default {
             recommendationSwap: null,
             preferenceSwap: null,
             task: {
+                explanation: null,
                 algorithm: [],
                 song_list: [],
                 song_user_pref_0: [],

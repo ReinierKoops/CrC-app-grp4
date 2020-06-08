@@ -121,7 +121,6 @@
                                     id="rationale" 
                                     clearable
                                     dense
-                                    :rules="explanationRules"
                                     :counter="100"
                                     label="Explanation" 
                                     outlined/>
@@ -130,7 +129,8 @@
                                     name="fade">
                                         <v-alert 
                                         v-if="show" 
-                                        type="error">
+                                        type="error"
+                                        dense>
                                             {{ errorText }}
                                         </v-alert>
                                     </transition>
@@ -213,13 +213,8 @@ export default {
                 userId: "",
                 algorithm: [],
                 fix: [],
-                explanations: [],
                 preferences: [],
-                time: 0,
-                explanationRules: [
-                v => !!v || 'Explanation of atleast 20 letters is required',
-                v => (v && v.length <= 100 && v.length >= 20) || 'Explanation must be between 20 to 100 letters',
-                ]
+                time: 0
             },
             icon: 'mdi-account',
             dialog: false,
@@ -238,7 +233,7 @@ export default {
                 fair = JSON.parse(fair.value);
                 let explanation = document.getElementById('rationale').value;
                 if (explanation.length < 20) {
-                    this.errorText = "Please provide more explanation!";
+                    this.errorText = "Please provide explanation of atleast 20 letters!";
                     this.displayAlert();
                 } else if (explanation.length > 100) {
                     this.errorText = "Please shorten your explanation to at most 100 characters!";
