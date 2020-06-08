@@ -94,11 +94,9 @@
 
                             <v-text-field 
                             id="rationale"
-                            v-model="explanation" 
                             clearable
                             dense
                             required
-                            :rules="explanationRules"
                             :counter="max_characters"
                             label="Explanation" 
                             outlined/>
@@ -156,7 +154,6 @@ export default {
             recommendationSwap: null,
             preferenceSwap: null,
             task: {
-                explanation: null,
                 algorithm: [],
                 song_list: [],
                 song_user_pref_0: [],
@@ -164,11 +161,7 @@ export default {
                 song_user_pref_2: [],
                 status: 0,
                 taskId: "",
-                users_order: [],
-                explanationRules: [
-                v => !!v || 'Explanation of atleast 20 letters is required',
-                v => (v && v.length <= 100 && v.length >= 20) || 'Explanation must be between 20 to 100 letters',
-                ]
+                users_order: []
             },
             originalList: [],
             dialog: false,
@@ -184,7 +177,7 @@ export default {
             let fair = JSON.stringify(this.task.algorithm) == JSON.stringify(this.originalList);
             let explanation = document.getElementById('rationale').value;
             if (explanation.length < 20) {
-                this.errorText = "Please provide more explanation!";
+                this.errorText = "Please provide explanation of atleast 20 letters!";
                 this.displayAlert();
             } else if (explanation.length > this.max_characters) {
                 this.errorText = "Please shorten your explanation to at most " + this.max_characters + " characters!";
