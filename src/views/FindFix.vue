@@ -90,7 +90,7 @@
                         <v-card-text>
                             <p class="body-1">
                             If you think it is unfair, make it more fair by <b>dragging the songs from other preference lists </b> onto songs from <b>Recommendations</b> you want to replace.
-                            Provide a <b>reasoning why</b>.</p>
+                            Provide a <b>reasoning why</b>. The order for <b>Recommendation</b> shouldn't matter.</p>
 
                             <v-text-field 
                             id="rationale" 
