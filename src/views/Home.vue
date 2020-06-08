@@ -19,7 +19,7 @@
                     justify="center"
                     >
                         <v-im>
-                            <youtube video-id="TZaCWmmbFO8" height="375" class="elevation-10"></youtube>
+                            <youtube video-id="q7FRPnj3gyM" height="375" class="elevation-10"></youtube>
                         </v-im>
                     </v-col>
                     <v-col
