@@ -121,6 +121,7 @@
                                     id="rationale" 
                                     clearable
                                     dense
+                                    :rules="explanationRules"
                                     :counter="100"
                                     label="Explanation" 
                                     outlined/>
@@ -214,7 +215,11 @@ export default {
                 fix: [],
                 explanations: [],
                 preferences: [],
-                time: 0
+                time: 0,
+                explanationRules: [
+                v => !!v || 'Explanation of atleast 20 letters is required',
+                v => (v && v.length <= 100 && v.length >= 20) || 'Explanation must be between 20 to 100 letters',
+                ]
             },
             icon: 'mdi-account',
             dialog: false,

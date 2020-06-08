@@ -96,6 +96,7 @@
                             id="rationale" 
                             clearable
                             dense
+                            :rules="explanationRules"
                             :counter="max_characters"
                             label="Explanation" 
                             outlined/>
@@ -160,7 +161,11 @@ export default {
                 song_user_pref_2: [],
                 status: 0,
                 taskId: "",
-                users_order: []
+                users_order: [],
+                explanationRules: [
+                v => !!v || 'Explanation of atleast 20 letters is required',
+                v => (v && v.length <= 100 && v.length >= 20) || 'Explanation must be between 20 to 100 letters',
+                ]
             },
             originalList: [],
             dialog: false,
