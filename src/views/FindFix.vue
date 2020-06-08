@@ -190,7 +190,7 @@ export default {
                     fix: this.task.algorithm,
                     fair: fair,
                     explanation: explanation
-                }).then(() => {
+                }, {merge: true}).then(() => {
                     // Go to the home page
                     router.push({ name: 'Home' })
                 });
