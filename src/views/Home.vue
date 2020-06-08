@@ -103,6 +103,7 @@
                                 Reorder the Algorithm list if you think you can make 
                                 it more fair by swapping songs.
                             </v-card-text>
+                            <v-divider></v-divider>
                             <v-card-actions>
                                 <v-btn 
                                 tile 
@@ -138,6 +139,7 @@
                                 </ol> 
                                 Give your opinion why you think "User-created" is more or less fair than "Algorithm".
                             </v-card-text>
+                            <v-divider></v-divider>
                             <v-card-actions>
                                 <v-btn 
                                 tile 

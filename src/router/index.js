@@ -14,25 +14,25 @@ Vue.use(VueRouter)
       path: '/',
       name: 'Home',
       component: Home,
-      // meta: {
-      //   requiresAuth: true
-      // }
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/findfix',
       name: 'FindFix',
       component: FindFix,
-      // meta: {
-      //   requiresAuth: true
-      // }
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/verify',
       name: 'Verify',
       component: Verify,
-      // meta: {
-      //   requiresAuth: true
-      // }
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/signup',
