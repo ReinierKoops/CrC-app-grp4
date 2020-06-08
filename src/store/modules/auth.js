@@ -6,6 +6,9 @@ firebaseInit.firestore();
 const state = {
     username: null,
     user_id: null,
+    age: null,
+    city: null,
+    country: null,
     email: null,
     feedback: null,
     fixes_done: null,
@@ -17,6 +20,9 @@ const state = {
 const getters = {
     isLoggedIn: state => !!state.username,
     getUsername: state => state.username,
+    getAge: state => state.age,
+    getCity: state => state.city,
+    getCountry: state => state.country,
     getFeedback: state => state.feedback,
     getEmail: state => state.email,
     getFixesDone: state => state.fixes_done,
@@ -40,7 +46,10 @@ const actions = {
             fixes_done: 0,
             verifies_done: 0,
             honey_status_fix: 0,
-            honey_status_verify: 0
+            honey_status_verify: 0,
+            age: payload.age,
+            city: payload.city,
+            country: payload.country,
         })
         // set state of user
         await commit('setUser', payload);
@@ -66,6 +75,9 @@ const actions = {
                         commit('setUser', { 
                             'username': doc.data().username,
                             'user_id': doc.data().user_id,
+                            'age': doc.data().age,
+                            'city': doc.data().city,
+                            'country': doc.data().country,
                             'email': doc.data().email,
                             'fixes_done': doc.data().fixes_done,
                             'verifies_done': doc.data().verifies_done,
@@ -104,7 +116,8 @@ const actions = {
         await commit('setUser', { 'username': '', 'user_id': '', 
         'email': '' , 'fixes_done': '', 
         'verifies_done': '', 'honey_status_fix': '',
-        'honey_status_verify': ''});
+        'honey_status_verify': '', 'age': '',
+        'city': '', 'country': ''});
     }
 }
 
@@ -112,6 +125,9 @@ const mutations = {
     setUser: (state, payload) => {
         state.username = payload.username;
         state.user_id = payload.user_id;
+        state.age = payload.age;
+        state.city = payload.city;
+        state.country = payload.country;
         state.email = payload.email;
         state.fixes_done = payload.fixes_done;
         state.verifies_done = payload.verifies_done;
