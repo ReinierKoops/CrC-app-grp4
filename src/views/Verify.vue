@@ -84,7 +84,7 @@
                         >
                             <preference-list 
                             :songs="prefs" 
-                            name="Preference top 5"
+                            name="Top 5 preference"
                             :subname="'by User ' + (index + 1) + '.'"
                             />
                         </v-col>
@@ -104,8 +104,6 @@
                                 <v-divider></v-divider>
 
                                 <v-card-text>
-                                    <p>The order for the <b>Recommendation lists</b> shouldn't matter.</p>
-
                                     <v-radio-group>
                                         <v-radio 
                                         name="fair" 

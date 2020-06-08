@@ -71,7 +71,7 @@
                             <preference-list 
                             draggable="true" 
                             :songs="prefs" 
-                            name="Preference top 5"
+                            name="Top 5 preference"
                             :subname="'by User ' + (index + 1) + '.'"
                             />
                         </v-col>
@@ -90,7 +90,7 @@
                         <v-card-text>
                             <p class="body-1">
                             If you think it is unfair, make it more fair by <b>dragging the songs from other preference lists </b> onto songs from <b>Recommendations</b> you want to replace.
-                            Provide a <b>reasoning why</b>. The order for <b>Recommendation</b> shouldn't matter.</p>
+                            Provide a <b>reasoning why</b>.</p>
 
                             <v-text-field 
                             id="rationale"
