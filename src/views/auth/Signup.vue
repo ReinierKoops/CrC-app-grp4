@@ -20,17 +20,45 @@
                         ref="form"
                         v-model="valid"
                         justify-center
-                        class="color-and-style-form elevation-10"
+                        row wrap
+                        class="color-and-style-form elevation-10s"
                     >
+
                         <v-text-field
                         v-model="username"
                         :counter="20"
                         :rules="usernameRules"
-                        label="Username"
+                        label="Name"
                         required
                         prepend-icon="mdi-account-circle"
                         ></v-text-field>
-                
+
+                        <v-text-field
+                        v-model="age"
+                        :rules="ageRules"
+                        label="Age"
+                        required
+                        prepend-icon="mdi-cake-variant"
+                        ></v-text-field>
+
+                        <v-text-field
+                        v-model="city"
+                        :counter="30"
+                        :rules="cityRules"
+                        label="City"
+                        required
+                        prepend-icon="mdi-city"
+                        ></v-text-field>
+
+                        <v-text-field
+                        v-model="country"
+                        :counter="30"
+                        :rules="countryRules"
+                        label="Country"
+                        required
+                        prepend-icon="mdi-map-search-outline"
+                        ></v-text-field>
+
                         <v-text-field
                         v-model="email"
                         :rules="emailRules"
@@ -38,7 +66,7 @@
                         required
                         prepend-icon="mdi-email"
                         ></v-text-field>
-                
+
                         <v-text-field
                         v-model="password"
                         :append-icon="show_pw ? 'mdi-eye' : 'mdi-eye-off'"
@@ -93,6 +121,9 @@ export default {
             show_pw: false,
             valid: true,
             username: null,
+            age: null,
+            city: null,
+            country: null,
             email: null,
             password: null,
             feedback: null,
@@ -100,6 +131,18 @@ export default {
             usernameRules: [
             v => !!v || 'Username is required',
             v => (v && v.length <= 20) || 'Username must be less than 20 characters',
+            ],
+            birthdateRules: [
+            v => !!v || 'Age is required',
+            v => (v && v.length <= 3) || 'Age must be less than 4 numbers',
+            ],
+            cityRules: [
+            v => !!v || 'City is required',
+            v => (v && v.length >= 3) || 'City must be more than 3 characters',
+            ],
+            countryRules: [
+            v => !!v || 'Country is required',
+            v => (v && v.length >= 3) || 'Country must be more than 3 characters',
             ],
             emailRules: [
             v => !!v || 'E-mail is required',
@@ -120,7 +163,10 @@ export default {
                 const payload = {
                     'username': this.username,
                     'email': this.email, 
-                    'password': this.password, 
+                    'password': this.password,
+                    'age': this.age,
+                    'city': this.city,
+                    'country': this.country,
                 }
                 this.createUser(payload);
             } catch (error) {
