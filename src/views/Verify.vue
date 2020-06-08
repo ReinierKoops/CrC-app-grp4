@@ -129,7 +129,8 @@
                                     name="fade">
                                         <v-alert 
                                         v-if="show" 
-                                        type="error">
+                                        type="error"
+                                        dense>
                                             {{ errorText }}
                                         </v-alert>
                                     </transition>
@@ -212,7 +213,6 @@ export default {
                 userId: "",
                 algorithm: [],
                 fix: [],
-                explanations: [],
                 preferences: [],
                 time: 0
             },
@@ -233,7 +233,7 @@ export default {
                 fair = JSON.parse(fair.value);
                 let explanation = document.getElementById('rationale').value;
                 if (explanation.length < 20) {
-                    this.errorText = "Please provide more explanation!";
+                    this.errorText = "Please provide explanation of atleast 20 characters!";
                     this.displayAlert();
                 } else if (explanation.length > 100) {
                     this.errorText = "Please shorten your explanation to at most 100 characters!";

@@ -93,9 +93,10 @@
                             Provide a <b>reasoning why</b>. The order for <b>Recommendation</b> shouldn't matter.</p>
 
                             <v-text-field 
-                            id="rationale" 
+                            id="rationale"
                             clearable
                             dense
+                            required
                             :counter="max_characters"
                             label="Explanation" 
                             outlined/>
@@ -176,7 +177,7 @@ export default {
             let fair = JSON.stringify(this.task.algorithm) == JSON.stringify(this.originalList);
             let explanation = document.getElementById('rationale').value;
             if (explanation.length < 20) {
-                this.errorText = "Please provide more explanation!";
+                this.errorText = "Please provide explanation of atleast 20 characters!";
                 this.displayAlert();
             } else if (explanation.length > this.max_characters) {
                 this.errorText = "Please shorten your explanation to at most " + this.max_characters + " characters!";
