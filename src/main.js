@@ -5,6 +5,9 @@ import router from './router'
 import store from './store'
 import firebase from 'firebase'
 import VueYoutube from 'vue-youtube'
+import axios from 'axios'
+
+axios.defaults.baseURL = 'https://us-central1-crc-party-grp4.cloudfunctions.net'
 
 Vue.config.productionTip = false
 
