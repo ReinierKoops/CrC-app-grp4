@@ -60,14 +60,14 @@
 
                         <recommendation 
                         name="New Recommendation" 
-                        subname="by other users."
+                        subname="for the group by other users."
                         :songs="task.fix"
                         class="add_margin"
                         />
 
                         <recommendation 
                         name="Old Recommendation" 
-                        subname="by Algorithm."
+                        subname="for the group by the algorithm."
                         :songs="task.algorithm"
                         />   
 
@@ -84,7 +84,7 @@
                         >
                             <preference-list 
                             :songs="prefs" 
-                            name="Preference top 5"
+                            name="Top 5 preferences"
                             :subname="'by User ' + (index + 1) + '.'"
                             />
                         </v-col>
@@ -98,14 +98,12 @@
                             tile
                             >
                                 <v-card-title class="subtitle-1">
-                                    Is <b>"New Recommendation"</b> fair to you?
+                                    <p>Is <b>"New Recommendation"</b> fair to you?</p>
                                 </v-card-title>
 
                                 <v-divider></v-divider>
 
                                 <v-card-text>
-                                    <p>The order for the <b>Recommendation lists</b> shouldn't matter.</p>
-
                                     <v-radio-group>
                                         <v-radio 
                                         name="fair" 
@@ -155,7 +153,7 @@
                             tile
                             >
                                 <v-card-title class="subtitle-1">
-                                    Explanations <b>"Old Recommendation"</b> unfair:
+                                    <p>Explanations on why <b>"Old Recommendation"</b> is unfair:</p>
                                 </v-card-title>
 
                                 <v-divider></v-divider>

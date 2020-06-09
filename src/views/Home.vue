@@ -5,103 +5,81 @@
     align="center"
     justify="center"
     >
-        <v-col
+        <v-row
         align="center"
         justify="center"
-        cols="1"
-        >
-        </v-col>
-        <v-col
-        align="center"
-        justify="center"
-        cols="10"
-        >
-            <v-row 
-            align="center"
-            justify="center"
-            noGutters
-            >
-                <v-col
-                cols="6" 
-                >
-                    <v-row 
-                    cols="5"
-                    class="elevation-10 add-margin-bottom max-width"
-                    >
-                        <v-col
-                        cols="7" 
-                        
-                        >
-                            <v-card
-                            color="blue"
-                            height="150px"
-                            elevation="10"
-                            :tile="true"
-                            class="text-sm-left mx-auto"
-                            >
-                                <v-card-text class="white--text">
-                                    Email:
-                                    <p class="title">
-                                        {{ this.$store.getters.getEmail }}
-                                    </p>
-                                    Username:
-                                    <p class="title text-capitalize">
-                                        {{ this.$store.getters.getUsername }}
-                                    </p>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
+        >   
+            <v-col cols="1"></v-col>
 
-                        <v-col
-                        cols="5" 
-                        >
-                            <avatar 
-                            class="elevation-10"
-                            :username="`${this.$store.getters.getUsername}`"
-                            :size="150"
-                            backgroundColor="#2296F3"
-                            color="white"
-                            ></avatar>
-                        </v-col>
-                    </v-row>
+            <v-col cols="10">
 
-                    <v-row 
-                    class="rounded-card max-width"
-                    align="center"
-                    justify="center"                    
-                    cols="7"
-                    >
-                        <youtube video-id="oLTNtvIHJ7M" height="375" class="elevation-10"></youtube>
-                    </v-row>
-                </v-col>
-                <v-col
-                cols="1" 
-                >
-                </v-col>
-                <v-col
-                cols="5" 
-                >
-                    <v-row 
-                    class="add-margin-bottom"
-                    align="center"
-                    justify="center"
-                    cols="6"
-                    >
+                <v-row>
+                
+                    <v-col cols="12">
+
                         <v-card class="elevation-10" min-height="264px">
+
+                            <v-container>
+                                <v-row>
+                                    <v-col
+                                    align="center"
+                                    justify="center"
+                                    >
+                                        <v-im>
+                                            <youtube video-id="q7FRPnj3gyM" height="375" class="elevation-10"></youtube>
+                                        </v-im>
+                                    </v-col>
+                                    <v-col
+                                    align="center"
+                                    justify="center"
+                                    >
+                                            <v-card-title class="display-1">
+                                                What is Party?
+                                            </v-card-title>
+                                            <v-divider></v-divider>
+                                            <v-card-text class="text-left">
+                                                <v-card-subtitle class="text-left subtitle-1">
+                                                    <b>Party</b> is a system that creates fair music recommendations for groups. To do this we need <b>your</b> help! Are you new to <b>Party</b>? Watch the video and get started! 
+                                                </v-card-subtitle>
+
+                                                <p class="body-2">Imagine this: you would like to go on a roadtrip together with your two best friends. For this roadtrip you would like to select some music you can listen to.
+                                                You and your best friends submit your preferences and an algorithm creates a list of songs that you will listen to for you. During your roadtrip you don't want
+                                                to find out that none of your songs were actually included in the recommendation created by the algorithm.
+                                                <br/>
+                                                <br/>
+                                                This is where <b>Party</b> comes in. By completing the two tasks listed below as explained in the video, <b>you</b> will help creating fair music recommendations
+                                                for other groups!</p>
+
+                                            </v-card-text>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+
+                        </v-card>
+
+                    </v-col>
+
+                    <v-col 
+                    cols="6">
+                        <v-card 
+                        class="elevation-10" 
+                        >
                             <v-card-title>
-                                Task 1: Change the order of Algorithm
+                                Task 1: Is the recommended list fair? If not, change it.
                             </v-card-title>
                             <v-card-subtitle class="text-left font-italic text-underline">
-                                Is "Algorithm" a fair list?
+                                Is the list provided by the algorithm a fair list?
                             </v-card-subtitle>
                             <v-card-text class="text-left">
-                                There are four lists for this task. Starting from the left:
-                                <ol>
-                                    <li>Algorithm</li>
-                                    <li>Preference of person 1, 2 and 3</li>
-                                </ol> 
-                                Reorder the Algorithm list if you think you can make 
-                                it more fair by swapping songs.
+                                <p class="body-2 black--text">
+                                    There are four lists for this task. Starting from the left:
+                                    <ol>
+                                        <li>Recommendation made by the algorithm</li>
+                                        <li>Preferences of person 1, 2 and 3</li>
+                                    </ol> 
+                                    Change the recommended list generated by the algorithm if you think you can make 
+                                    it more fair by swapping songs!
+                                </p>
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
@@ -110,34 +88,35 @@
                                 :to="{ name: 'FindFix' }"
                                 :block="true"
                                 color="#2296F3"
-                                class="white--text"
+                                class="white--text pulse"
                                 >
                                     <v-icon>mdi-swap-vertical</v-icon>Task 1: Swap "Algorithm" fairly
                                 </v-btn>
                             </v-card-actions>
-                        </v-card>                        
-                    </v-row>
-                    
-                    <v-row 
-                    align="center"
-                    justify="center"                    
-                    cols="6"
-                    >
-                        <v-card class="elevation-10" min-height="286px">
+                        </v-card>
+                    </v-col>
+
+                    <v-col 
+                    cols="6">
+                        <v-card 
+                        class="elevation-10" 
+                        >
                             <v-card-title>
-                                Task 2: Is "User-created" list fair?
+                                Task 2: Is the new list fair?
                             </v-card-title>
                             <v-card-subtitle class="text-left font-italic text-underline">
-                                Is "User-created" a fair list?
+                                Is the new list created by other users a fair list?
                             </v-card-subtitle>
                             <v-card-text class="text-left">
-                                There are five lists for this task. Starting from the left:
-                                <ol>
-                                    <li>Algorithm</li>
-                                    <li>User-created</li>
-                                    <li>Preference of person 1, 2 and 3</li>
-                                </ol> 
-                                Give your opinion why you think "User-created" is more or less fair than "Algorithm".
+                                <p class="body-2 black--text">
+                                    There are five lists for this task. Starting from the left:
+                                    <ol>
+                                        <li>New recommendation by other users</li>
+                                        <li>Recommendation made by the algorithm</li>
+                                        <li>Preferences of person 1, 2 and 3</li>
+                                    </ol> 
+                                    Give your opinion on whether you think the list created by other users is fair!
+                                </p>
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
@@ -146,41 +125,59 @@
                                 :to="{ name: 'Verify' }"
                                 :block="true"
                                 color="#2296F3"
-                                class="white--text"
+                                class="white--text pulse"
                                 >
                                     <v-icon>mdi-comment-eye-outline</v-icon>Task 2: Is "User-created" fair?
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
-                    </v-row>
-                </v-col>
-            </v-row>
-        </v-col>
-        <v-col
-        align="center"
-        justify="center"
-        cols="1"
-        >
-        </v-col>
+                    </v-col>
+
+                </v-row>
+
+            </v-col>
+
+            <v-col cols="1"></v-col>
+
+        </v-row>
+
     </v-container>
 </template>
 
 <script>
-import Avatar from 'vue-avatar'
 
 export default {
     name: 'Home',
     data() {
         return {
         }
-    },
-    components: {
-        Avatar
     }
 }
 </script>
 
 <style scoped>
+.pulse {
+    animation-delay: 2s;
+    animation-duration: 3s; 
+    animation-name: pulse;
+    animation-iteration-count: 3;
+}
+@keyframes pulse {
+    0% {
+    background-color: #66ff00;
+    }
+    100% {
+        background-color: #2296F3;
+    }
+}
+@-webkit-keyframes pulse {
+    0% {
+    background-color: #66ff00;
+    }
+    100% {
+        background-color: #2296F3;
+    }
+}
 .add-margin-bottom{
     margin-bottom: 45px;
 }
