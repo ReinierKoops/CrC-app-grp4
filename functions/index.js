@@ -254,14 +254,16 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                     // Iterate over all the song in the list
                     doc.data().fix.forEach(function (song) {
                         // Unique song in the list
-                        if (!(song["id"] in song_list_count)) {
-                            song_list_count[song["id"]] = 1;
-                            song_with_users[song["id"]] = [doc.data().userId];
-                            song_lookup[song["id"]] = song;
-                        } else {
-                            // Not unique song
-                            song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
-                            song_with_users[song["id"]].push(doc.data().userId);
+                        if (!doc.data().fair) {
+                            if (!(song["id"] in song_list_count)) {
+                                song_list_count[song["id"]] = 1;
+                                song_with_users[song["id"]] = [doc.data().userId];
+                                song_lookup[song["id"]] = song;
+                            } else {
+                                // Not unique song
+                                song_list_count[song["id"]] = song_list_count[song["id"]] + 1;
+                                song_with_users[song["id"]].push(doc.data().userId);
+                            }
                         }
                     });
                 });
@@ -357,9 +359,9 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                         let last_song = top_five_songs[top_five_songs.length - 1];
                         let user_gen_expl = [];
 
-                        fixes_jsons.forEach(function(fix_json) {
-                            if (song_with_users[last_song].includes(fix_json["userId"])) {
-                                user_gen_expl.push(fix_json["explanation"]);
+                        fixes_jsons.forEach(function (fix_json) {
+                            if (!item.fair) {
+                                user_gen_expl.push(fix_json["explanation"])
                             }
                         });
                         json_object['user_gen_expl'] = user_gen_expl;
