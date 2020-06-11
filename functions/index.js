@@ -360,7 +360,7 @@ exports.onWriteFix = functions.firestore.document('fixes/{id}').onWrite(async (c
                         let user_gen_expl = [];
 
                         fixes_jsons.forEach(function (fix_json) {
-                            if (!item.fair) {
+                            if (!fix_json.fair) {
                                 user_gen_expl.push(fix_json["explanation"])
                             }
                         });
