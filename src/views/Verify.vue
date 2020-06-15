@@ -62,13 +62,14 @@
                         name="New Recommendation" 
                         subname="for the group by other users."
                         :songs="task.fix"
-                        class="add_margin"
+                        class="add_margin recommendation"
                         />
 
                         <recommendation 
                         name="Old Recommendation" 
                         subname="for the group by the algorithm."
                         :songs="task.algorithm"
+                        class="recommendation"
                         />   
 
 
@@ -86,6 +87,7 @@
                             :songs="prefs" 
                             name="Top 5 preferences"
                             :subname="'by User ' + (index + 1) + '.'"
+                            class="preferences"
                             />
                         </v-col>
                     </v-row>
@@ -298,9 +300,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .add-some-padding{
     padding-top: 24px;
+}
+.recommendation >>> .v-list .v-list-item{
+  border-bottom: 0.5px solid lightgrey;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.preferences >>> .v-list .v-list-item{
+  border-bottom: 0.5px solid lightgrey;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 .add_margin{
     margin-bottom: 24px;

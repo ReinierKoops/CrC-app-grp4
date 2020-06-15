@@ -64,13 +64,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.add_border{
-  border-style: dotted;
-  border-color: gray;
-  border-width: 0.5px;
-  margin-left: 4px;
-  margin-right: 4px;
-  margin-bottom: 2px;
-}
-</style>

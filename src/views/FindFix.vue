@@ -54,6 +54,7 @@
                 class="add-some-padding"
                 >
                     <recommendation 
+                    class="recommendation"
                     name="Recommendation" 
                     subname="for the group by the algorithm."
                     draggable="true" 
@@ -69,6 +70,7 @@
                         v-for="(prefs, index) in [task.song_user_pref_0, task.song_user_pref_1, task.song_user_pref_2]" 
                         :key="index">
                             <preference-list 
+                            class="preferences"
                             draggable="true" 
                             :songs="prefs" 
                             name="Top 5 preferences"
@@ -306,11 +308,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .add-some-padding{
     padding-top: 24px;
 }
-.add_border{
+.recommendation >>> .v-list .add_border{
+  border-style: dotted;
+  border-color: gray;
+  border-width: 0.5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 2px;
+}
+.preferences >>> .v-list .add_border{
   border-style: dotted;
   border-color: gray;
   border-width: 0.5px;

@@ -26,7 +26,8 @@
       v-on:drop="dragDrop" 
       v-on:dragover="dragOver">
 
-        <v-list-item-content two-line>
+        <v-list-item-content 
+        two-line>
           <v-list-item-title>{{ song.title }}</v-list-item-title>
           <v-list-item-subtitle>{{ song.artist }}</v-list-item-subtitle>
         </v-list-item-content>
